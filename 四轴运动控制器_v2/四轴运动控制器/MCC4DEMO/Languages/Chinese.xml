@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Chinese>
+  <ErrMsg_ReadConfigFileErr>读单位配置文件失败！</ErrMsg_ReadConfigFileErr>
+  <ErrMsg_WarningLimitedStopRun>警告！系统限位有效，停止运行！</ErrMsg_WarningLimitedStopRun>
+  <ErrMsg_InfoParaDownloading>参数下载中...[{0:p}]</ErrMsg_InfoParaDownloading>
+  <ErrMsg_InfoParaDownloadError>参数下载失败！</ErrMsg_InfoParaDownloadError>
+  <ErrMsg_InfoParaUploading>参数上传中...[{0:p}]</ErrMsg_InfoParaUploading>
+  <ErrMsg_InfoParaUploadError>参数上传失败！</ErrMsg_InfoParaUploadError>
+  <ErrMsg_ChoseCmndToModify>请选择要修改的程序行！</ErrMsg_ChoseCmndToModify>
+  <ErrMsg_OpenFileOk>成功打开{0}程序文件</ErrMsg_OpenFileOk>
+  <ErrMsg_SaveFileTo>成功保存程序至</ErrMsg_SaveFileTo>
+  <ErrMsg_ProgListNullCantSave>程序区为空，不能保存！</ErrMsg_ProgListNullCantSave>
+  <ErrMsg_LinkMCCardOk>联接于[{0}]运动控制卡初成功！</ErrMsg_LinkMCCardOk>
+  <ErrMsg_LinkMCCardErr>联接于[{0}]运动控制卡初始化失败！</ErrMsg_LinkMCCardErr>
+  <ErrMsg_UpdateSomeParaErr>更新参数[{0}]失败！</ErrMsg_UpdateSomeParaErr>
+  <ErrMsg_UpdateSomeParaOK>更新参数成功！</ErrMsg_UpdateSomeParaOK>
+  <ErrMsg_SendCmndErrNoLink>发送指令失败！检查通讯联接！</ErrMsg_SendCmndErrNoLink>
+  <ErrMsg_ParaSaveOK>参数保存成功！</ErrMsg_ParaSaveOK>
+  <ErrMsg_ParaSaveErr>参数保存失败！</ErrMsg_ParaSaveErr>
+  <AutoProgMsg_SendAll>程序发送完毕！</AutoProgMsg_SendAll>
+  <AutoProgMsg_SendCmndOk>下发第{0:d3}次循环的第{1:d3}条指令成功！</AutoProgMsg_SendCmndOk>
+  <AutoProgMsg_SendCmndErr>下发第{0:d3}次循环的第{1:d3}条指令失败，检查通信联接！</AutoProgMsg_SendCmndErr>
+  <AutoProgMsg_ReSendCmndWhenRunning>系统正在运行或已经开始程序控制，不能重新启动自动程序控制！</AutoProgMsg_ReSendCmndWhenRunning>
+  <MainFrmButton1Text_Stop>停止</MainFrmButton1Text_Stop>
+  <MainFrmButton1Text_Update>更新</MainFrmButton1Text_Update>
+  <IOTstFrmJoystickVoltage>负向电压值[0-{0:f2}]V,正向电压值[{1:f2}-3.3]V</IOTstFrmJoystickVoltage>
+  <AboutFrameTitle>关于 {0}</AboutFrameTitle>
+  <AboutFrameVersionInfo>DLL文件版本号:{0} 控制卡版本号：{1}</AboutFrameVersionInfo>
+  <AboutFrameDescription>高速四轴摇杆控制器上位机控制程序</AboutFrameDescription>
+  <SetParaDlg_LimitEnable>使能</SetParaDlg_LimitEnable>
+  <SetParaDlg_LimitDisable>无效</SetParaDlg_LimitDisable>
+</Chinese>

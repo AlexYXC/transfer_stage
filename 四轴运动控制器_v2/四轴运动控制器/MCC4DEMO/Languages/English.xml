@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<English>
+  <ErrMsg_ReadConfigFileErr>Failed to Read Configuration file!</ErrMsg_ReadConfigFileErr>
+  <ErrMsg_WarningLimitedStopRun>Warning! Limited, Stop Running!</ErrMsg_WarningLimitedStopRun>
+  <ErrMsg_InfoParaDownloading>Downloading Parameter...[{0:p}]</ErrMsg_InfoParaDownloading>
+  <ErrMsg_InfoParaDownloadError>Download Parameters Error!</ErrMsg_InfoParaDownloadError>
+  <ErrMsg_InfoParaUploading>Uploading Parameter...[{0:p}]</ErrMsg_InfoParaUploading>
+  <ErrMsg_InfoParaUploadError>Upload Parameters Error!</ErrMsg_InfoParaUploadError>
+  <ErrMsg_ChoseCmndToModify>Select the Command Line!</ErrMsg_ChoseCmndToModify>
+  <ErrMsg_OpenFileOk>Open file {0} Ok</ErrMsg_OpenFileOk>
+  <ErrMsg_SaveFileTo>Save Programe File to </ErrMsg_SaveFileTo>
+  <ErrMsg_ProgListNullCantSave>Programe Is Empty, Can not be Saved!</ErrMsg_ProgListNullCantSave>
+  <ErrMsg_LinkMCCardOk>Connect To SP[{0}] Card Initial OK!</ErrMsg_LinkMCCardOk>
+  <ErrMsg_LinkMCCardErr>Connect To SP[{0}] Card Initial Error!</ErrMsg_LinkMCCardErr>
+  <ErrMsg_UpdateSomeParaErr>Update Parameter[{0}] Error!</ErrMsg_UpdateSomeParaErr>
+  <ErrMsg_UpdateSomeParaOK>Update Parameters OK!</ErrMsg_UpdateSomeParaOK>
+  <ErrMsg_SendCmndErrNoLink>Send Command Error!Check Communication!</ErrMsg_SendCmndErrNoLink>
+  <ErrMsg_ParaSaveOK>Save Parameter Ok!</ErrMsg_ParaSaveOK>
+  <ErrMsg_ParaSaveErr>Save Parameter Error!</ErrMsg_ParaSaveErr>
+  <AutoProgMsg_SendAll>Programe file is sended over!</AutoProgMsg_SendAll>
+  <AutoProgMsg_SendCmndOk>Send Cycle{0:d3}, {1:d3}th Command OK!</AutoProgMsg_SendCmndOk>
+  <AutoProgMsg_SendCmndErr>Send Cycle{0:d3}, {1:d3}th Command Error, Check the Connection Please!</AutoProgMsg_SendCmndErr>
+  <AutoProgMsg_ReSendCmndWhenRunning>The System is Running Now, Can Not Restart Programe Control</AutoProgMsg_ReSendCmndWhenRunning>
+  <MainFrmButton1Text_Stop>Stop</MainFrmButton1Text_Stop>
+  <MainFrmButton1Text_Update>Update</MainFrmButton1Text_Update>
+  <IOTstFrmJoystickVoltage>Neg Voltage[0-{0:f2}]V,Pos Voltage[{1:f2}-3.3]V</IOTstFrmJoystickVoltage>
+  <AboutFrameTitle>About {0}</AboutFrameTitle>
+  <AboutFrameVersionInfo>DLL Version:{0} Card Version：{1}</AboutFrameVersionInfo>
+  <AboutFrameDescription>MCCDEMO PC Programe</AboutFrameDescription>
+  <SetParaDlg_LimitEnable>Enable</SetParaDlg_LimitEnable>
+  <SetParaDlg_LimitDisable>Disable</SetParaDlg_LimitDisable>
+</English>
