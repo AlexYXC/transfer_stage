@@ -368,6 +368,7 @@ class MotionApp(tk.Tk):
         self.port_var = tk.StringVar(value="COM4")
         self.temp_port_var = tk.StringVar(value="COM5")
         self.temp_status_var = tk.StringVar(value="Connecting to COM5...")
+        self.temp_record_duration_var = tk.StringVar(value="Collection time: 00 min 00 sec")
         self.temp_current_var = tk.StringVar(value="--.- °C")
         self.temp_estimated_wanted_var = tk.StringVar(value="--.- °C")
         self.temp_target_var = tk.StringVar(value="200")
@@ -388,6 +389,8 @@ class MotionApp(tk.Tk):
         self.temp_last_temperature = None
         self.temp_recording = False
         self.temp_record_start = None
+        self.temp_record_elapsed_seconds = 0.0
+        self.temp_record_timer_after = None
         self.temp_samples = []
         self.cycle_var = tk.StringVar(value="1")
         self.program_active = False
@@ -839,12 +842,14 @@ class MotionApp(tk.Tk):
         ttk.Label(settings, text="Wanted mode: 190–325 °C with calibration. Direct mode bypasses that range and calibration; the controller register limit still applies. Max measured module temperature: 235 °C.",
                   style="Hint.TLabel", wraplength=780).grid(row=4, column=0, columnspan=7, sticky="w", pady=(6, 0))
 
-        curve_box = ttk.LabelFrame(left, text="Temperature Curve", padding=6)
+        curve_box = ttk.LabelFrame(left, text="Temperature Curve", padding=10)
         curve_box.pack(fill="both", expand=True, pady=(0, 8))
         self.temp_plot = tk.Canvas(curve_box, height=225, bg="white",
                                    highlightthickness=1, highlightbackground="#cbd5e1")
         self.temp_plot.pack(fill="both", expand=True)
         self.temp_plot.bind("<Configure>", lambda _event: self._draw_temperature_curve())
+        ttk.Label(curve_box, textvariable=self.temp_record_duration_var,
+                  anchor="center", style="Hint.TLabel").pack(fill="x", pady=(7, 0))
 
         tools = ttk.Frame(left, style="Card.TFrame")
         tools.pack(fill="x", pady=(0, 7))
@@ -910,12 +915,8 @@ class MotionApp(tk.Tk):
             self.temp_status_var.set("Controller unavailable or command still pending")
 
     def _temperature_target_value(self):
-        if self.temp_manual_machine_var.get():
-            value = self.temp_machine_set_var.get()
-        else:
-            value = self.temp_target_var.get()
         try:
-            return float(value or 0)
+            return float(self.temp_machine_set_var.get() or 0)
         except ValueError:
             return 0.0
 
@@ -1074,23 +1075,48 @@ class MotionApp(tk.Tk):
     def start_temperature_recording(self):
         self.temp_samples = []
         self.temp_record_start = time.monotonic()
+        self.temp_record_elapsed_seconds = 0.0
         self.temp_recording = True
         self.temp_record_button.configure(state="disabled")
         self.temp_stop_record_button.configure(state="normal")
+        self._update_temperature_record_duration()
         self._draw_temperature_curve()
         self.temp_status_var.set("Recording")
 
     def stop_temperature_recording(self):
+        if self.temp_record_start is not None:
+            self.temp_record_elapsed_seconds = time.monotonic() - self.temp_record_start
         self.temp_recording = False
         self.temp_record_start = None
         self.temp_record_button.configure(state="normal")
         self.temp_stop_record_button.configure(state="disabled")
+        self._update_temperature_record_duration()
         self.temp_status_var.set("Recording stopped")
 
     def clear_temperature_curve(self):
         self.temp_samples = []
         self.temp_record_start = time.monotonic() if self.temp_recording else None
+        self.temp_record_elapsed_seconds = 0.0
+        self._update_temperature_record_duration()
         self._draw_temperature_curve()
+
+    def _update_temperature_record_duration(self):
+        if self.temp_record_timer_after is not None:
+            try:
+                self.after_cancel(self.temp_record_timer_after)
+            except tk.TclError:
+                pass
+            self.temp_record_timer_after = None
+        elapsed = self.temp_record_elapsed_seconds
+        if self.temp_recording and self.temp_record_start is not None:
+            elapsed = max(0.0, time.monotonic() - self.temp_record_start)
+            self.temp_record_elapsed_seconds = elapsed
+        minutes, seconds = divmod(int(elapsed), 60)
+        self.temp_record_duration_var.set(
+            "Collection time: %02d min %02d sec" % (minutes, seconds))
+        if self.temp_recording:
+            self.temp_record_timer_after = self.after(
+                250, self._update_temperature_record_duration)
 
     def export_temperature_csv(self):
         if not self.temp_samples:
@@ -1105,7 +1131,7 @@ class MotionApp(tk.Tk):
         try:
             with open(path, "w", newline="", encoding="utf-8") as handle:
                 writer = csv.writer(handle)
-                writer.writerow(["Time (s)", "Actual Temperature (C)", "Target Temperature (C)"])
+                writer.writerow(["Time (s)", "Module Temperature (C)", "Target Module Set Temperature (C)"])
                 writer.writerows(self.temp_samples)
             messagebox.showinfo("Export CSV", "Saved %d samples to:\n%s" % (len(self.temp_samples), path), parent=self)
         except Exception as exc:
@@ -1118,14 +1144,17 @@ class MotionApp(tk.Tk):
         canvas.delete("all")
         width = max(300, canvas.winfo_width())
         height = max(150, canvas.winfo_height())
-        left, top, right, bottom = 55, 18, 18, 34
+        left, top, right, bottom = 78, 40, 22, 54
         plot_width = max(1, width - left - right)
         plot_height = max(1, height - top - bottom)
         canvas.create_rectangle(left, top, left + plot_width, top + plot_height, outline="#1f2937")
+        canvas.create_text(24, top + plot_height / 2, angle=90, anchor="center",
+                           text="Module Temperature (C)", fill="#1f2937")
+        canvas.create_text(left + plot_width / 2, height - 15, anchor="center",
+                           text="Time (s)", fill="#1f2937")
         if not self.temp_samples:
             canvas.create_text(left + plot_width / 2, top + plot_height / 2,
                                text="Start Recording to capture temperature", fill="#64748b")
-            canvas.create_text(left, height - 8, anchor="w", text="Time (s)", fill="#1f2937")
             return
         times = [sample[0] for sample in self.temp_samples]
         actual = [sample[1] for sample in self.temp_samples]
@@ -1154,13 +1183,18 @@ class MotionApp(tk.Tk):
                 if dash:
                     options["dash"] = dash
                 canvas.create_line(*coords, **options)
-        canvas.create_text(8, top, anchor="w", text="%.1f" % ymax, fill="#1f2937")
-        canvas.create_text(8, top + plot_height, anchor="w", text="%.1f" % ymin, fill="#1f2937")
-        canvas.create_text(left, height - 8, anchor="w", text="Time (s)", fill="#1f2937")
-        canvas.create_line(width - 150, 13, width - 130, 13, fill="#2563eb", width=2)
-        canvas.create_text(width - 125, 13, anchor="w", text="Actual", fill="#1f2937")
-        canvas.create_line(width - 75, 13, width - 55, 13, fill="#dc2626", width=2, dash=(5, 3))
-        canvas.create_text(width - 50, 13, anchor="w", text="Target", fill="#1f2937")
+        canvas.create_text(left - 8, top, anchor="e", text="%.1f" % ymax, fill="#1f2937")
+        canvas.create_text(left - 8, top + plot_height, anchor="e", text="%.1f" % ymin, fill="#1f2937")
+        legend_y = 19
+        legend_start = max(left + 8, width - 190)
+        canvas.create_line(legend_start, legend_y, legend_start + 20, legend_y,
+                           fill="#2563eb", width=2)
+        canvas.create_text(legend_start + 25, legend_y, anchor="w",
+                           text="Output", fill="#1f2937")
+        canvas.create_line(legend_start + 85, legend_y, legend_start + 105, legend_y,
+                           fill="#dc2626", width=2, dash=(5, 3))
+        canvas.create_text(legend_start + 110, legend_y, anchor="w",
+                           text="Module Set", fill="#1f2937")
 
     def _badge(self, parent, label, variable, color):
         holder = ttk.Frame(parent, style="Card.TFrame", padding=(8, 3))
