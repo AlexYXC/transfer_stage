@@ -2,12 +2,15 @@
 from __future__ import annotations
 
 import base64
+import csv
 import math
 import queue
 import subprocess
 import threading
 import time
 import tkinter as tk
+from collections import deque
+from datetime import datetime
 from pathlib import Path
 from tkinter import filedialog, messagebox, simpledialog, ttk
 
@@ -15,6 +18,8 @@ from tkinter import filedialog, messagebox, simpledialog, ttk
 APP_DIR = Path(__file__).resolve().parent
 BRIDGE_EXE = APP_DIR / "ControllerBridge.exe"
 AXES = ("X", "Y", "Z", "T")
+T_AXIS_INDEX = AXES.index("T")
+T_AXIS_DISPLAY_SCALE = 2.0
 PARAMETERS = (
     "Manual distance", "Low-speed range", "Manual speed", "Acceleration",
     "Pulse equivalent", "Home speed", "Signal level", "Home switch distance",
@@ -22,6 +27,10 @@ PARAMETERS = (
 )
 LIMIT_BITS = {"X-": 9, "X+": 10, "Y-": 6, "Y+": 7,
               "Z-": 3, "Z+": 4, "T-": 0, "T+": 1}
+TEMP_SETPOINT_SCALE = 1.41442716
+TEMP_SETPOINT_OFFSET = 6.19
+TEMP_WANTED_MIN = 190.0
+TEMP_WANTED_MAX = 325.0
 
 
 class BridgeError(RuntimeError):
@@ -106,10 +115,217 @@ class ControllerClient:
                 self.proc.kill()
 
 
+class TemperatureWorker(threading.Thread):
+    """Owns temperature-controller requests away from Tk's event loop."""
+    REGISTER_NAMES = ("seg1_temp", "seg1_power", "seg1_heat_time", "seg1_hold_time", "P", "I", "D")
+
+    def __init__(self, client, events, port="COM5"):
+        super().__init__(name="temperature-controller", daemon=True)
+        self.client = client
+        self.events = events
+        self.port = port
+        self._condition = threading.Condition()
+        self._commands = deque()
+        self._want_connection = True
+        self._reconfigure = True
+        self._stopping = False
+        self._online = False
+        self._opened = False
+        self._busy = False
+
+    @property
+    def online(self):
+        with self._condition:
+            return self._online
+
+    @property
+    def wanted_port(self):
+        with self._condition:
+            return self.port if self._want_connection else None
+
+    def connect(self, port):
+        with self._condition:
+            self.port = port
+            self._want_connection = True
+            self._reconfigure = True
+            self._online = False
+            self._busy = False
+            self._commands.clear()
+            self.events.put(("temp_online", False))
+            self.events.put(("temp_busy", False))
+            self._condition.notify_all()
+
+    def disconnect(self):
+        with self._condition:
+            self._want_connection = False
+            self._reconfigure = True
+            self._online = False
+            self._busy = False
+            self._commands.clear()
+            self.events.put(("temp_online", False))
+            self.events.put(("temp_busy", False))
+            self._condition.notify_all()
+
+    def submit(self, operations, description, *, priority_stop=False):
+        with self._condition:
+            if self._stopping or not self._online:
+                return False
+            if priority_stop:
+                self._commands.clear()
+            elif self._busy or self._commands:
+                return False
+            self._commands.append((tuple(operations), description, priority_stop))
+            self._busy = True
+            self.events.put(("temp_busy", True))
+            self._condition.notify()
+        return True
+
+    def stop(self):
+        with self._condition:
+            self._stopping = True
+            self._commands.clear()
+            self._condition.notify_all()
+
+    def _close_port(self):
+        if self._opened:
+            try:
+                self.client.request("TEMP_CLOSE")
+            except Exception:
+                pass
+            self._opened = False
+
+    def _lost_connection(self, message, detail=""):
+        self._close_port()
+        with self._condition:
+            self._online = False
+            self._busy = False
+            self._commands.clear()
+            self.events.put(("temp_online", False))
+            self.events.put(("temp_busy", False))
+            self.events.put(("temp_status", message, detail))
+
+    def run(self):
+        next_poll = 0.0
+        retry_at = 0.0
+        try:
+            while True:
+                action = None
+                command = None
+                with self._condition:
+                    while action is None:
+                        if self._stopping:
+                            action = "stop"
+                            break
+                        now = time.monotonic()
+                        if self._reconfigure:
+                            self._reconfigure = False
+                            action = "configure"
+                            break
+                        if self._commands:
+                            command = self._commands.popleft()
+                            action = "command"
+                            break
+                        if self._online and now >= next_poll:
+                            action = "poll"
+                            break
+                        if self._want_connection and not self._online and now >= retry_at:
+                            action = "configure"
+                            break
+                        deadlines = []
+                        if self._online:
+                            deadlines.append(next_poll)
+                        elif self._want_connection:
+                            deadlines.append(retry_at)
+                        timeout = max(0.01, min(deadlines) - now) if deadlines else None
+                        self._condition.wait(timeout)
+
+                if action == "stop":
+                    self._close_port()
+                    break
+                if action == "configure":
+                    self._close_port()
+                    with self._condition:
+                        wants_connection = self._want_connection
+                        port = self.port
+                    if not wants_connection:
+                        with self._condition:
+                            self._online = False
+                        self.events.put(("temp_online", False))
+                        self.events.put(("temp_status", "Disconnected", ""))
+                        continue
+                    self.events.put(("temp_status", "Connecting to " + port + "...", ""))
+                    try:
+                        self.client.request("TEMP_OPEN", port)
+                        self._opened = True
+                        values = {}
+                        for name in self.REGISTER_NAMES:
+                            with self._condition:
+                                if self._stopping:
+                                    break
+                            values[name] = int(self.client.request("TEMP_READ_REGISTER", name))
+                        with self._condition:
+                            if self._stopping:
+                                continue
+                        with self._condition:
+                            self._online = True
+                        self.events.put(("temp_online", True))
+                        self.events.put(("temp_initial", values))
+                        self.events.put(("temp_status", "Connected to " + port, ""))
+                        next_poll = time.monotonic() + 0.3
+                    except Exception as exc:
+                        self._lost_connection("Connection error on " + port + "; retrying", str(exc))
+                        retry_at = time.monotonic() + 2.0
+                    continue
+                if action == "poll":
+                    try:
+                        raw = int(self.client.request("TEMP_READ_REGISTER", "current_temp"))
+                        self.events.put(("temp_read", raw / 10.0))
+                        next_poll = time.monotonic() + 0.3
+                    except Exception as exc:
+                        self._lost_connection("Connection lost; retrying", str(exc))
+                        retry_at = time.monotonic() + 2.0
+                    continue
+                if action == "command":
+                    operations, description, _priority_stop = command
+                    try:
+                        for kind, name, value in operations:
+                            with self._condition:
+                                if self._stopping:
+                                    break
+                                if self._commands and self._commands[0][2]:
+                                    self.events.put(("temp_status", "Update interrupted by Stop", ""))
+                                    break
+                            if kind == "register":
+                                self.client.request("TEMP_WRITE_REGISTER", name, int(value))
+                            elif kind == "coil":
+                                self.client.request("TEMP_WRITE_COIL", name, "1" if value else "0")
+                            else:
+                                raise ValueError("Unknown temperature operation: " + kind)
+                        else:
+                            self.events.put(("temp_status", description, ""))
+                    except Exception as exc:
+                        self._lost_connection("Command not confirmed; reconnecting", str(exc))
+                        retry_at = time.monotonic() + 2.0
+                    finally:
+                        with self._condition:
+                            self._busy = bool(self._commands)
+                            self.events.put(("temp_busy", self._busy))
+                            if self._commands:
+                                self._condition.notify()
+                    continue
+        finally:
+            self._close_port()
+            with self._condition:
+                self._online = False
+                self._busy = False
+            self.events.put(("temp_online", False))
+            self.events.put(("temp_busy", False))
+
+
 class MotionApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MCC4 Motion Control — English")
+        self.title("MCC4 Motion and Temperature Control GUI")
         self.geometry("1280x850")
         self.minsize(1060, 720)
         self.configure(bg="#edf1f5")
@@ -150,6 +366,29 @@ class MotionApp(tk.Tk):
         self.footer_text = tk.StringVar(value="Ready. Connect to a controller to read its live status.")
         self.motion_queue_count_var = tk.StringVar(value="Commands in queue: 0 (active included)")
         self.port_var = tk.StringVar(value="COM4")
+        self.temp_port_var = tk.StringVar(value="COM5")
+        self.temp_status_var = tk.StringVar(value="Connecting to COM5...")
+        self.temp_current_var = tk.StringVar(value="--.- °C")
+        self.temp_estimated_wanted_var = tk.StringVar(value="--.- °C")
+        self.temp_target_var = tk.StringVar(value="200")
+        self.temp_machine_set_var = tk.StringVar(value="--.-")
+        self.temp_machine_set_display_var = tk.StringVar(value="--.- °C")
+        self.temp_manual_machine_var = tk.BooleanVar(value=False)
+        self.temp_target_var.trace_add("write", self._update_machine_setpoint_display)
+        self.temp_machine_set_var.trace_add("write", self._update_machine_set_readout)
+        self._update_machine_setpoint_display()
+        self._update_machine_set_readout()
+        self.temp_heat_var = tk.StringVar(value="0")
+        self.temp_hold_var = tk.StringVar(value="9999")
+        self.temp_power_var = tk.StringVar(value="100")
+        self.temp_pid_vars = {name: tk.StringVar(value="") for name in ("P", "I", "D")}
+        self.temp_online = False
+        self.temp_busy = False
+        self.temp_power_manual_override = False
+        self.temp_last_temperature = None
+        self.temp_recording = False
+        self.temp_record_start = None
+        self.temp_samples = []
         self.cycle_var = tk.StringVar(value="1")
         self.program_active = False
         self.program_cancel = threading.Event()
@@ -161,6 +400,8 @@ class MotionApp(tk.Tk):
         self._configure_style()
         self._build_menu()
         self._build_ui()
+        self.temperature_worker = TemperatureWorker(self.client, self.events, self.temp_port_var.get())
+        self.temperature_worker.start()
         self.protocol("WM_DELETE_WINDOW", self.close_app)
         self.after(100, self._pump_events)
         self.after(500, self._poll_state)
@@ -230,7 +471,7 @@ class MotionApp(tk.Tk):
         bar.add_cascade(label="Other", menu=other_menu)
 
         help_menu = tk.Menu(bar, tearoff=False)
-        help_menu.add_command(label="About MCC4 English UI", command=self.about)
+        help_menu.add_command(label="About MCC4 Motion and Temperature Control GUI", command=self.about)
         bar.add_cascade(label="About", menu=help_menu)
         self.config(menu=bar)
         self.bind_all("<Control-n>", lambda e: self.file_new())
@@ -242,8 +483,8 @@ class MotionApp(tk.Tk):
         outer.pack(fill="both", expand=True)
         top = ttk.Frame(outer)
         top.pack(fill="x", pady=(0, 10))
-        ttk.Label(top, text="MCC4 Motion Control", style="Title.TLabel").pack(side="left")
-        ttk.Label(top, text="Four-axis controller", foreground="#607286").pack(side="left", padx=(12, 0), pady=(8, 0))
+        ttk.Label(top, text="MCC4 Motion and Temperature Control GUI", style="Title.TLabel").pack(side="left")
+        ttk.Label(top, text="Four-axis motion + temperature controller", foreground="#607286").pack(side="left", padx=(12, 0), pady=(8, 0))
 
         connect = ttk.Frame(outer, style="Card.TFrame", padding=10)
         connect.pack(fill="x", pady=(0, 10))
@@ -265,9 +506,12 @@ class MotionApp(tk.Tk):
         tabs.pack(fill="both", expand=True)
         program_tab = ttk.Frame(tabs, style="Card.TFrame", padding=10)
         manual_tab = ttk.Frame(tabs, style="Card.TFrame", padding=10)
+        temperature_tab = ttk.Frame(tabs, style="Card.TFrame", padding=10)
         tabs.add(program_tab, text="Program Mode")
         tabs.add(manual_tab, text="Manual Mode")
+        tabs.add(temperature_tab, text="Temperature Control")
         tabs.select(manual_tab)
+        self._build_temperature_tab(temperature_tab)
 
         program_head = ttk.Frame(program_tab, style="Card.TFrame")
         program_head.pack(fill="x", pady=(0, 7))
@@ -359,8 +603,8 @@ class MotionApp(tk.Tk):
 
         limits_card = ttk.LabelFrame(settings_row, text="Limits", padding=7)
         limits_card.grid(row=0, column=1, sticky="nsew", padx=(4, 0))
-        ttk.Label(limits_card, text="Limit coordinates use controller units.",
-                  style="Hint.TLabel").pack(anchor="w", pady=(0, 5))
+        ttk.Label(limits_card, text="Limit values use displayed axis units. T uses the same doubled scale as manual movement (180 displayed = 90 controller units).",
+                  style="Hint.TLabel", wraplength=280, justify="left").pack(anchor="w", pady=(0, 5))
         limits_table = ttk.Frame(limits_card, style="Card.TFrame")
         limits_table.pack(fill="x")
         limit_headers = (("Axis", 4), ("Soft −", 7), ("Soft +", 7),
@@ -399,7 +643,7 @@ class MotionApp(tk.Tk):
         ttk.Label(axis_group, text="Position", style="Hint.TLabel").grid(row=0, column=1, sticky="w", padx=4)
         ttk.Label(axis_group, text="Current Speed", style="Hint.TLabel").grid(row=0, column=2, sticky="w", padx=4)
         ttk.Label(axis_group, text="Jog", style="Hint.TLabel").grid(row=0, column=3)
-        ttk.Label(axis_group, text="Set Distance", style="Hint.TLabel").grid(row=0, column=4, columnspan=2)
+        ttk.Label(axis_group, text="Set Step Distance", style="Hint.TLabel").grid(row=0, column=4, columnspan=2)
         ttk.Label(axis_group, text="Set Zero", style="Hint.TLabel").grid(row=0, column=6)
         ttk.Label(axis_group, text="Home", style="Hint.TLabel").grid(row=0, column=7)
         for i, axis in enumerate(AXES):
@@ -443,7 +687,7 @@ class MotionApp(tk.Tk):
         ttk.Button(queue_section, text="Stop Motion & Clear Queue",
                    command=self.stop_motion_and_clear_queue).pack(side="right")
 
-        ttk.Label(controls_card, text="The Set button updates that axis's Manual distance. T distance is halved before writing (180 → 90). Save to ROM to keep changes after reboot.",
+        ttk.Label(controls_card, text="The Set button updates that axis's step distance. T distance is halved before writing (180 → 90). Save to ROM to keep changes after reboot.",
                   style="Hint.TLabel", wraplength=700).pack(fill="x", anchor="w", pady=(0, 6))
         self.limit_detail = ttk.Label(controls_card, textvariable=self.limit_text, style="Hint.TLabel", wraplength=700)
         self.limit_detail.pack(fill="x", anchor="w", pady=(0, 8))
@@ -460,6 +704,463 @@ class MotionApp(tk.Tk):
         ttk.Separator(footer).pack(fill="x", pady=(0, 6))
         ttk.Label(footer, textvariable=self.footer_text).pack(side="left", fill="x", expand=True)
         ttk.Label(footer, text="MCC4DLL x86 bridge", foreground="#64748b").pack(side="right")
+
+    def _build_temperature_tab(self, parent):
+        main = ttk.Frame(parent, style="Card.TFrame")
+        main.pack(fill="both", expand=True)
+
+        body = ttk.Frame(main, style="Card.TFrame")
+        body.pack(fill="both", expand=True)
+        body.columnconfigure(0, weight=1)
+        body.columnconfigure(1, weight=0)
+        body.rowconfigure(0, weight=1)
+        left = ttk.Frame(body, style="Card.TFrame")
+        left.grid(row=0, column=0, sticky="nsew")
+        right = ttk.Frame(body, style="Card.TFrame", width=270)
+        right.grid(row=0, column=1, sticky="ns", padx=(10, 0))
+        right.grid_propagate(False)
+
+        heating_panel = ttk.LabelFrame(right, text="Heating Module", padding=10)
+        heating_panel.pack(fill="x", pady=(0, 10))
+        self.temp_start_button = ttk.Button(
+            heating_panel, text="Start Heating", style="Accent.TButton",
+            command=lambda: self._write_temperature_run(True))
+        self.temp_start_button.pack(fill="x", pady=(0, 5))
+        self.temp_stop_button = ttk.Button(
+            heating_panel, text="Stop Heating Module",
+            command=lambda: self._write_temperature_run(False))
+        self.temp_stop_button.pack(fill="x")
+
+        pid_panel = ttk.LabelFrame(right, text="PID Values", padding=10)
+        pid_panel.pack(fill="x")
+        ttk.Label(pid_panel, text="Sets the controller PID values. Default is P=150, I=15, and D=3",
+                  style="Hint.TLabel", wraplength=210, justify="left").pack(anchor="w", pady=(0, 10))
+        self.temp_pid_entries = {}
+        self.temp_pid_buttons = []
+        for row, name in enumerate(("P", "I", "D")):
+            line = ttk.Frame(pid_panel, style="Card.TFrame")
+            line.pack(fill="x", pady=4)
+            ttk.Label(line, text=name, width=3, style="Card.TLabel",
+                      font=("Segoe UI Semibold", 10)).pack(side="left")
+            entry = ttk.Entry(line, textvariable=self.temp_pid_vars[name], width=9, justify="right")
+            entry.pack(side="left", padx=(4, 6))
+            entry.bind("<Return>", lambda _event, key=name: self.write_temperature_pid(key))
+            button = ttk.Button(line, text="Set", width=5,
+                                command=lambda key=name: self.write_temperature_pid(key))
+            button.pack(side="left")
+            self.temp_pid_entries[name] = entry
+            self.temp_pid_buttons.append(button)
+
+        connection = ttk.LabelFrame(right, text="Temperature Controller Connection", padding=10)
+        connection.pack(fill="x", pady=(10, 0))
+        port_row = ttk.Frame(connection, style="Card.TFrame")
+        port_row.pack(fill="x", pady=(0, 7))
+        ttk.Label(port_row, text="Serial port").pack(side="left")
+        self.temp_port_box = ttk.Combobox(
+            port_row, textvariable=self.temp_port_var, width=9,
+            values=["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8"],
+            state="normal")
+        self.temp_port_box.pack(side="right")
+        connection_buttons = ttk.Frame(connection, style="Card.TFrame")
+        connection_buttons.pack(fill="x", pady=(0, 7))
+        self.temp_connect_button = ttk.Button(
+            connection_buttons, text="Connect", command=self.connect_temperature_controller)
+        self.temp_connect_button.pack(side="left", fill="x", expand=True, padx=(0, 3))
+        self.temp_disconnect_button = ttk.Button(
+            connection_buttons, text="Disconnect", command=self.disconnect_temperature_controller)
+        self.temp_disconnect_button.pack(side="left", fill="x", expand=True, padx=(3, 0))
+        self.temp_status_label = ttk.Label(
+            connection, textvariable=self.temp_status_var, wraplength=220, justify="left")
+        self.temp_status_label.pack(fill="x")
+        self.temp_status_tooltip = Tooltip(self.temp_status_label, "")
+
+        current_panel = ttk.LabelFrame(left, text="Current Temperature", padding=10)
+        current_panel.pack(fill="x", pady=(0, 8))
+        temperature_readouts = ttk.Frame(current_panel, style="Card.TFrame")
+        temperature_readouts.pack(fill="x")
+        for column in range(3):
+            temperature_readouts.columnconfigure(column, weight=1)
+        for column, (label, variable) in enumerate((
+                ("Module Output Temperature", self.temp_current_var),
+                ("Module Set Temperature", self.temp_machine_set_display_var),
+                ("Estimated Wanted Temperature", self.temp_estimated_wanted_var))):
+            ttk.Label(temperature_readouts, text=label, anchor="center",
+                      style="Hint.TLabel").grid(row=0, column=column, sticky="ew", padx=4, pady=(0, 3))
+            ttk.Label(temperature_readouts, textvariable=variable, anchor="center",
+                      justify="center", font=("Segoe UI Semibold", 16),
+                      style="Card.TLabel").grid(row=1, column=column, sticky="ew", padx=4)
+
+        settings = ttk.LabelFrame(left, text="Temperature Control", padding=10)
+        settings.pack(fill="x", pady=(0, 8))
+        for column, weight in ((1, 0), (2, 0), (3, 0), (4, 0), (5, 0)):
+            settings.columnconfigure(column, weight=weight)
+
+        ttk.Label(settings, text="Wanted Temp (°C)").grid(row=0, column=0, sticky="w", padx=(0, 8), pady=4)
+        self.temp_target_entry = ttk.Entry(settings, textvariable=self.temp_target_var, width=12, justify="right")
+        self.temp_target_entry.grid(row=0, column=1, sticky="w", pady=4)
+        self.temp_target_entry.bind("<Return>", lambda _event: self.write_temperature_target())
+        temp_plus = ttk.Button(settings, text="+", width=4, command=self.increase_temperature)
+        temp_minus = ttk.Button(settings, text="−", width=4, command=self.decrease_temperature)
+        temp_plus.grid(row=0, column=2, padx=(3, 1), pady=4)
+        temp_minus.grid(row=0, column=3, padx=(1, 8), pady=4)
+        ttk.Label(settings, text="Module Set Temp (°C)").grid(row=0, column=4, sticky="w", padx=(0, 6), pady=4)
+        self.temp_machine_set_entry = ttk.Entry(
+            settings, textvariable=self.temp_machine_set_var, width=10, justify="right")
+        self.temp_machine_set_entry.grid(row=0, column=5, sticky="w", pady=4)
+        self.temp_machine_set_entry.bind(
+            "<Return>", lambda _event: self.write_machine_set_temperature())
+        self.temp_machine_set_button = ttk.Button(
+            settings, text="Set", width=5, command=self.write_machine_set_temperature)
+        self.temp_machine_set_button.grid(row=0, column=6, padx=(5, 0), pady=4)
+        ttk.Checkbutton(
+            settings, text="Set module temperature directly",
+            variable=self.temp_manual_machine_var,
+            command=self._toggle_temperature_input_mode
+        ).grid(row=1, column=4, columnspan=3, sticky="w", padx=(0, 4), pady=4)
+
+        ttk.Label(settings, text="Heating Time (min)").grid(row=1, column=0, sticky="w", padx=(0, 8), pady=4)
+        self.temp_heat_entry = ttk.Entry(settings, textvariable=self.temp_heat_var, width=16, justify="right")
+        self.temp_heat_entry.grid(row=1, column=1, sticky="w", pady=4)
+        self.temp_heat_entry.bind("<Return>", lambda _event: self.write_temperature_heat_time())
+
+        ttk.Label(settings, text="Holding Time (min)").grid(row=2, column=0, sticky="w", padx=(0, 8), pady=4)
+        self.temp_hold_entry = ttk.Entry(settings, textvariable=self.temp_hold_var, width=16, justify="right")
+        self.temp_hold_entry.grid(row=2, column=1, sticky="w", pady=4)
+        self.temp_hold_entry.bind("<Return>", lambda _event: self.write_temperature_hold_time())
+
+        ttk.Label(settings, text="Power Limit (%)").grid(row=3, column=0, sticky="w", padx=(0, 8), pady=4)
+        self.temp_power_entry = ttk.Entry(settings, textvariable=self.temp_power_var, width=16, justify="right")
+        self.temp_power_entry.grid(row=3, column=1, sticky="w", pady=4)
+        self.temp_power_entry.bind("<Return>", lambda _event: self.write_temperature_power())
+        power_plus = ttk.Button(settings, text="+", width=4, command=self.increase_temperature_power)
+        power_minus = ttk.Button(settings, text="−", width=4, command=self.decrease_temperature_power)
+        power_plus.grid(row=3, column=2, padx=(8, 2), pady=4)
+        power_minus.grid(row=3, column=3, padx=2, pady=4)
+        ttk.Label(settings, text="Wanted mode: 190–325 °C with calibration. Direct mode bypasses that range and calibration; the controller register limit still applies. Max measured module temperature: 235 °C.",
+                  style="Hint.TLabel", wraplength=780).grid(row=4, column=0, columnspan=7, sticky="w", pady=(6, 0))
+
+        curve_box = ttk.LabelFrame(left, text="Temperature Curve", padding=6)
+        curve_box.pack(fill="both", expand=True, pady=(0, 8))
+        self.temp_plot = tk.Canvas(curve_box, height=225, bg="white",
+                                   highlightthickness=1, highlightbackground="#cbd5e1")
+        self.temp_plot.pack(fill="both", expand=True)
+        self.temp_plot.bind("<Configure>", lambda _event: self._draw_temperature_curve())
+
+        tools = ttk.Frame(left, style="Card.TFrame")
+        tools.pack(fill="x", pady=(0, 7))
+        self.temp_record_button = ttk.Button(tools, text="Start Recording", command=self.start_temperature_recording)
+        self.temp_stop_record_button = ttk.Button(tools, text="Stop Recording", command=self.stop_temperature_recording, state="disabled")
+        self.temp_export_button = ttk.Button(tools, text="Export CSV", command=self.export_temperature_csv)
+        self.temp_clear_button = ttk.Button(tools, text="Clear Curve", command=self.clear_temperature_curve)
+        for widget in (self.temp_record_button, self.temp_stop_record_button,
+                       self.temp_export_button, self.temp_clear_button):
+            widget.pack(side="left", padx=(0, 6))
+
+        self.temp_wanted_controls = [self.temp_target_entry, temp_plus, temp_minus]
+        self.temp_machine_controls = [self.temp_machine_set_entry, self.temp_machine_set_button]
+        self.temp_write_controls = [
+            self.temp_heat_entry, self.temp_hold_entry, self.temp_power_entry,
+            power_plus, power_minus, self.temp_start_button,
+            *self.temp_pid_entries.values(), *self.temp_pid_buttons,
+        ]
+        self._update_temperature_controls()
+        self._draw_temperature_curve()
+
+    def _update_temperature_controls(self):
+        enabled = self.temp_online and not self.temp_busy
+        state = "normal" if enabled else "disabled"
+        for widget in getattr(self, "temp_write_controls", []):
+            widget.configure(state=state)
+        wanted_state = "normal" if enabled and not self.temp_manual_machine_var.get() else "disabled"
+        machine_state = "normal" if enabled and self.temp_manual_machine_var.get() else "disabled"
+        for widget in getattr(self, "temp_wanted_controls", []):
+            widget.configure(state=wanted_state)
+        for widget in getattr(self, "temp_machine_controls", []):
+            widget.configure(state=machine_state)
+        if hasattr(self, "temp_stop_button"):
+            self.temp_stop_button.configure(state="normal" if self.temp_online else "disabled")
+        if hasattr(self, "temp_connect_button"):
+            self.temp_connect_button.configure(state="disabled" if self.temp_online else "normal")
+            wanted = self.temperature_worker.wanted_port if hasattr(self, "temperature_worker") else self.temp_port_var.get()
+            self.temp_disconnect_button.configure(state="normal" if wanted else "disabled")
+
+    def connect_temperature_controller(self):
+        port = self.temp_port_var.get().strip().upper()
+        if not port:
+            messagebox.showwarning("Port required", "Select a temperature controller COM port.", parent=self)
+            return
+        motion_port = self.port_var.get().strip().upper()
+        motion_connecting = str(self.connect_button.cget("state")) == "disabled" and not self.connected
+        if (self.connected or motion_connecting) and motion_port == port:
+            self.temp_status_var.set("This COM port is already used by the motion controller.")
+            return
+        self.temp_port_var.set(port)
+        self.temp_status_var.set("Connecting to " + port + "...")
+        self.temp_status_tooltip.text = ""
+        self.temperature_worker.connect(port)
+        self._update_temperature_controls()
+
+    def disconnect_temperature_controller(self):
+        self.temperature_worker.disconnect()
+        self.temp_status_var.set("Disconnecting...")
+        self._update_temperature_controls()
+
+    def _submit_temperature(self, operations, description, *, priority_stop=False):
+        if not self.temperature_worker.submit(operations, description, priority_stop=priority_stop):
+            self.temp_status_var.set("Controller unavailable or command still pending")
+
+    def _temperature_target_value(self):
+        if self.temp_manual_machine_var.get():
+            value = self.temp_machine_set_var.get()
+        else:
+            value = self.temp_target_var.get()
+        try:
+            return float(value or 0)
+        except ValueError:
+            return 0.0
+
+    def _wanted_temperature_value(self):
+        try:
+            return float(self.temp_target_var.get() or 0)
+        except ValueError:
+            return 0.0
+
+    def _machine_setpoint_raw(self, wanted_temperature):
+        machine_temperature = TEMP_SETPOINT_SCALE * (wanted_temperature - TEMP_SETPOINT_OFFSET)
+        return int(round(machine_temperature * 10))
+
+    def _update_machine_setpoint_display(self, *_args):
+        if self.temp_manual_machine_var.get():
+            return
+        try:
+            wanted = float(self.temp_target_var.get())
+        except (ValueError, tk.TclError):
+            self.temp_machine_set_var.set("--.-")
+            return
+        raw = self._machine_setpoint_raw(wanted)
+        self.temp_machine_set_var.set("%.1f" % (raw / 10.0))
+
+    def _update_machine_set_readout(self, *_args):
+        try:
+            machine_temperature = float(self.temp_machine_set_var.get())
+        except (ValueError, tk.TclError):
+            self.temp_machine_set_display_var.set("--.- °C")
+            return
+        self.temp_machine_set_display_var.set("%.1f °C" % machine_temperature)
+
+    def _set_measured_temperature_readouts(self, machine_temperature, offline=False):
+        prefix = "Last: " if offline else ""
+        suffix = " (offline)" if offline else ""
+        wanted_temperature = machine_temperature / TEMP_SETPOINT_SCALE + TEMP_SETPOINT_OFFSET
+        self.temp_current_var.set("%s%.1f °C%s" % (prefix, machine_temperature, suffix))
+        self.temp_estimated_wanted_var.set("%s%.1f °C%s" % (prefix, wanted_temperature, suffix))
+
+    def _toggle_temperature_input_mode(self):
+        if not self.temp_manual_machine_var.get():
+            try:
+                machine_temperature = float(self.temp_machine_set_var.get())
+                wanted_temperature = machine_temperature / TEMP_SETPOINT_SCALE + TEMP_SETPOINT_OFFSET
+                self.temp_target_var.set("%.1f" % wanted_temperature)
+            except (ValueError, ZeroDivisionError, tk.TclError):
+                pass
+        self._update_machine_setpoint_display()
+        self._update_temperature_controls()
+
+    def write_temperature_target(self):
+        try:
+            value = float(self.temp_target_var.get())
+            if not TEMP_WANTED_MIN <= value <= TEMP_WANTED_MAX:
+                raise ValueError("Wanted temperature must be from 190 to 325 °C.")
+            raw = self._machine_setpoint_raw(value)
+            if not 0 <= raw <= 65535:
+                raise ValueError("Converted module setpoint must fit in one controller register.")
+        except (ValueError, OverflowError) as exc:
+            self.temp_status_var.set("Invalid target temperature")
+            self.temp_status_tooltip.text = str(exc)
+            return
+        machine_temperature = raw / 10.0
+        self._submit_temperature(
+            [("register", "seg1_temp", raw)],
+            "Module set temperature saved: %.1f °C" % machine_temperature)
+
+    def write_machine_set_temperature(self):
+        try:
+            machine_temperature = float(self.temp_machine_set_var.get())
+            raw = int(round(machine_temperature * 10))
+            if not 0 <= raw <= 65535:
+                raise ValueError("Module set temperature must fit in one controller register.")
+        except (ValueError, OverflowError) as exc:
+            self.temp_status_var.set("Invalid module set temperature")
+            self.temp_status_tooltip.text = str(exc)
+            return
+        machine_temperature = raw / 10.0
+        self.temp_machine_set_var.set("%.1f" % machine_temperature)
+        self._submit_temperature(
+            [("register", "seg1_temp", raw)],
+            "Module set temperature saved: %.1f °C" % machine_temperature)
+
+    def write_temperature_heat_time(self):
+        self._write_temperature_integer("seg1_heat_time", self.temp_heat_var.get(), "Heating time saved")
+
+    def write_temperature_hold_time(self):
+        self._write_temperature_integer("seg1_hold_time", self.temp_hold_var.get(), "Holding time saved")
+
+    def _write_temperature_integer(self, name, text, description):
+        try:
+            value = int(text)
+            if not 0 <= value <= 65535:
+                raise ValueError("Value must be from 0 to 65535.")
+        except (ValueError, OverflowError) as exc:
+            self.temp_status_var.set("Invalid time value")
+            self.temp_status_tooltip.text = str(exc)
+            return
+        self._submit_temperature([("register", name, value)], description)
+
+    def write_temperature_power(self):
+        self.temp_power_manual_override = True
+        try:
+            value = max(0, min(100, int(self.temp_power_var.get())))
+        except (ValueError, OverflowError):
+            self.temp_status_var.set("Enter a power limit from 0 to 100")
+            return
+        self.temp_power_var.set(str(value))
+        self._submit_temperature([("register", "seg1_power", value)], "Power limit saved")
+
+    def write_temperature_pid(self, name):
+        try:
+            value = int(self.temp_pid_vars[name].get())
+            if not 0 <= value <= 65535:
+                raise ValueError("PID register values must be from 0 to 65535.")
+        except (ValueError, OverflowError) as exc:
+            self.temp_status_var.set("Invalid %s value" % name)
+            self.temp_status_tooltip.text = str(exc)
+            return
+        self.temp_pid_vars[name].set(str(value))
+        self._submit_temperature([("register", name, value)], "%s value saved" % name)
+
+    def increase_temperature(self):
+        value = self._wanted_temperature_value()
+        value = TEMP_WANTED_MIN if value < TEMP_WANTED_MIN else min(TEMP_WANTED_MAX, value + 1)
+        self.temp_target_var.set("%g" % value)
+        self.write_temperature_target()
+
+    def decrease_temperature(self):
+        value = self._wanted_temperature_value()
+        value = TEMP_WANTED_MIN if value <= TEMP_WANTED_MIN else max(TEMP_WANTED_MIN, value - 1)
+        self.temp_target_var.set("%g" % value)
+        self.write_temperature_target()
+
+    def increase_temperature_power(self):
+        try:
+            value = int(self.temp_power_var.get() or 0)
+        except ValueError:
+            value = 0
+        self.temp_power_var.set(str(min(100, value + 10)))
+        self.write_temperature_power()
+
+    def decrease_temperature_power(self):
+        try:
+            value = int(self.temp_power_var.get() or 0)
+        except ValueError:
+            value = 0
+        self.temp_power_var.set(str(max(0, value - 10)))
+        self.write_temperature_power()
+
+    def _write_temperature_run(self, start):
+        self._submit_temperature([("coil", "run", start)],
+                                 "Started" if start else "Stopped",
+                                 priority_stop=not start)
+
+    def start_temperature_recording(self):
+        self.temp_samples = []
+        self.temp_record_start = time.monotonic()
+        self.temp_recording = True
+        self.temp_record_button.configure(state="disabled")
+        self.temp_stop_record_button.configure(state="normal")
+        self._draw_temperature_curve()
+        self.temp_status_var.set("Recording")
+
+    def stop_temperature_recording(self):
+        self.temp_recording = False
+        self.temp_record_start = None
+        self.temp_record_button.configure(state="normal")
+        self.temp_stop_record_button.configure(state="disabled")
+        self.temp_status_var.set("Recording stopped")
+
+    def clear_temperature_curve(self):
+        self.temp_samples = []
+        self.temp_record_start = time.monotonic() if self.temp_recording else None
+        self._draw_temperature_curve()
+
+    def export_temperature_csv(self):
+        if not self.temp_samples:
+            messagebox.showinfo("Export CSV", "No recorded data to export.", parent=self)
+            return
+        path = filedialog.asksaveasfilename(
+            parent=self, title="Export Temperature Data",
+            initialfile="temperature_%s.csv" % datetime.now().strftime("%Y%m%d_%H%M%S"),
+            defaultextension=".csv", filetypes=[("CSV Files", "*.csv")])
+        if not path:
+            return
+        try:
+            with open(path, "w", newline="", encoding="utf-8") as handle:
+                writer = csv.writer(handle)
+                writer.writerow(["Time (s)", "Actual Temperature (C)", "Target Temperature (C)"])
+                writer.writerows(self.temp_samples)
+            messagebox.showinfo("Export CSV", "Saved %d samples to:\n%s" % (len(self.temp_samples), path), parent=self)
+        except Exception as exc:
+            messagebox.showerror("Export Error", str(exc), parent=self)
+
+    def _draw_temperature_curve(self):
+        canvas = getattr(self, "temp_plot", None)
+        if canvas is None:
+            return
+        canvas.delete("all")
+        width = max(300, canvas.winfo_width())
+        height = max(150, canvas.winfo_height())
+        left, top, right, bottom = 55, 18, 18, 34
+        plot_width = max(1, width - left - right)
+        plot_height = max(1, height - top - bottom)
+        canvas.create_rectangle(left, top, left + plot_width, top + plot_height, outline="#1f2937")
+        if not self.temp_samples:
+            canvas.create_text(left + plot_width / 2, top + plot_height / 2,
+                               text="Start Recording to capture temperature", fill="#64748b")
+            canvas.create_text(left, height - 8, anchor="w", text="Time (s)", fill="#1f2937")
+            return
+        times = [sample[0] for sample in self.temp_samples]
+        actual = [sample[1] for sample in self.temp_samples]
+        target = [sample[2] for sample in self.temp_samples]
+        xmin, xmax = times[0], max(times[-1], times[0] + 1)
+        ymin, ymax = min(actual + target), max(actual + target)
+        if ymax - ymin < 1:
+            ymin -= 1
+            ymax += 1
+        else:
+            padding = (ymax - ymin) * 0.08
+            ymin -= padding
+            ymax += padding
+        for index in range(1, 5):
+            y = top + plot_height * index / 5
+            canvas.create_line(left, y, left + plot_width, y, fill="#d1d5db", dash=(3, 3))
+        def point(x, value):
+            return (left + (x - xmin) / (xmax - xmin) * plot_width,
+                    top + plot_height - (value - ymin) / (ymax - ymin) * plot_height)
+        for values, color, dash in ((actual, "#2563eb", ()), (target, "#dc2626", (5, 3))):
+            coords = []
+            for x, value in zip(times, values):
+                coords.extend(point(x, value))
+            if len(coords) >= 4:
+                options = {"fill": color, "width": 2}
+                if dash:
+                    options["dash"] = dash
+                canvas.create_line(*coords, **options)
+        canvas.create_text(8, top, anchor="w", text="%.1f" % ymax, fill="#1f2937")
+        canvas.create_text(8, top + plot_height, anchor="w", text="%.1f" % ymin, fill="#1f2937")
+        canvas.create_text(left, height - 8, anchor="w", text="Time (s)", fill="#1f2937")
+        canvas.create_line(width - 150, 13, width - 130, 13, fill="#2563eb", width=2)
+        canvas.create_text(width - 125, 13, anchor="w", text="Actual", fill="#1f2937")
+        canvas.create_line(width - 75, 13, width - 55, 13, fill="#dc2626", width=2, dash=(5, 3))
+        canvas.create_text(width - 50, 13, anchor="w", text="Target", fill="#1f2937")
 
     def _badge(self, parent, label, variable, color):
         holder = ttk.Frame(parent, style="Card.TFrame", padding=(8, 3))
@@ -714,6 +1415,40 @@ class MotionApp(tk.Tk):
                         self.footer_text.set(label + " complete.")
                 elif item[0] == "motion_queue_idle":
                     self._refresh_parameter_controls()
+                elif item[0] == "temp_online":
+                    self.temp_online = item[1]
+                    if not self.temp_online and self.temp_last_temperature is not None:
+                        self._set_measured_temperature_readouts(self.temp_last_temperature, offline=True)
+                    self._update_temperature_controls()
+                elif item[0] == "temp_busy":
+                    self.temp_busy = item[1]
+                    self._update_temperature_controls()
+                elif item[0] == "temp_status":
+                    _, message, detail = item
+                    self.temp_status_var.set(message)
+                    self.temp_status_tooltip.text = detail or message
+                elif item[0] == "temp_initial":
+                    values = item[1]
+                    self.temp_power_var.set(str(int(values["seg1_power"])))
+                    self.temp_heat_var.set(str(int(values["seg1_heat_time"])))
+                    self.temp_hold_var.set(str(int(values["seg1_hold_time"])))
+                    for name in ("P", "I", "D"):
+                        self.temp_pid_vars[name].set(str(int(values[name])))
+                    self.temp_power_manual_override = True
+                elif item[0] == "temp_read":
+                    temperature = item[1]
+                    self.temp_last_temperature = temperature
+                    self._set_measured_temperature_readouts(temperature)
+                    if (not self.temp_power_manual_override and not self.temp_busy
+                            and self.focus_get() is not self.temp_power_entry):
+                        difference = abs(temperature - self._temperature_target_value())
+                        self.temp_power_var.set("10" if difference <= 2 else "50" if difference <= 10 else "100")
+                    if self.temp_recording:
+                        elapsed = time.monotonic() - self.temp_record_start
+                        self.temp_samples.append((elapsed, temperature, self._temperature_target_value()))
+                        self._draw_temperature_curve()
+                    self.temp_status_var.set("Recording" if self.temp_recording else "OK")
+                    self.temp_status_tooltip.text = self.temp_status_var.get()
         except queue.Empty:
             pass
         with self.manual_queue_lock:
@@ -862,6 +1597,7 @@ class MotionApp(tk.Tk):
                 return
             ports = sorted(value.split(","), key=lambda p: (not p.startswith("COM"), int(p[3:]) if p.startswith("COM") and p[3:].isdigit() else 999)) if value else []
             self.port_box["values"] = ports or ["COM1", "COM2", "COM3", "COM4"]
+            self.temp_port_box["values"] = ports or ["COM1", "COM2", "COM3", "COM4", "COM5"]
             if ports and self.port_var.get() not in ports:
                 self.port_var.set(ports[0])
             self.footer_text.set("Found %d serial port(s)." % len(ports))
@@ -871,6 +1607,12 @@ class MotionApp(tk.Tk):
         port = self.port_var.get().strip().upper()
         if not port:
             messagebox.showwarning("Port required", "Select a serial port first.", parent=self)
+            return
+        if self.temperature_worker.wanted_port == port:
+            messagebox.showwarning(
+                "COM port in use",
+                "The temperature controller is using %s. Choose a different COM port or disconnect temperature control first." % port,
+                parent=self)
             return
         self.connect_button.configure(state="disabled")
         self.footer_text.set("Connecting to " + port + "…")
@@ -949,12 +1691,13 @@ class MotionApp(tk.Tk):
             return
         for axis in range(4):
             base = axis * 10
-            display_distance = values[base] * 2 if axis == AXES.index("T") else values[base]
+            scale = T_AXIS_DISPLAY_SCALE if axis == T_AXIS_INDEX else 1.0
+            display_distance = values[base] * scale
             self.manual_distance_vars[axis].set(self._fmt_param(display_distance))
             self.speed_vars[axis].set(self._fmt_param(values[base+2]))
             self.accel_vars[axis].set(self._fmt_param(values[base+3]))
-            self.neg_vars[axis].set(self._fmt_param(values[base+8]))
-            self.pos_vars[axis].set(self._fmt_param(values[base+9]))
+            self.neg_vars[axis].set(self._fmt_param(values[base+8] * scale))
+            self.pos_vars[axis].set(self._fmt_param(values[base+9] * scale))
             signal = int(round(values[base+6]))
             self.soft_vars[axis].set(bool(signal & 32))
             self.hard_vars[axis].set(bool(signal & 64))
@@ -1015,17 +1758,20 @@ class MotionApp(tk.Tk):
 
         soft_enabled = bool(self.soft_vars[axis].get())
         hard_enabled = bool(self.hard_vars[axis].get())
+        scale = T_AXIS_DISPLAY_SCALE if axis == T_AXIS_INDEX else 1.0
+        controller_negative = negative / scale
+        controller_positive = positive / scale
         def done(value, error):
             if error:
                 self.footer_text.set("Axis %s limit settings failed: %s" % (AXES[axis], error))
                 messagebox.showerror("Controller rejected setting", error, parent=self)
                 return
             base = axis * 10
-            self.params[base+8], self.params[base+9] = negative, positive
+            self.params[base+8], self.params[base+9] = controller_negative, controller_positive
             self.params[base+6] = self._set_flag(self.params[base+6] or 0, 32, soft_enabled)
             self.params[base+6] = self._set_flag(self.params[base+6], 64, hard_enabled)
             self.footer_text.set("Axis %s limits applied." % AXES[axis])
-        self._call("SETLIMITS", axis, negative, positive,
+        self._call("SETLIMITS", axis, controller_negative, controller_positive,
                    int(soft_enabled), int(hard_enabled), on_done=done)
 
     def apply_manual_distance(self, axis):
@@ -1041,7 +1787,7 @@ class MotionApp(tk.Tk):
         except ValueError as exc:
             messagebox.showerror("Invalid manual distance", str(exc), parent=self)
             return
-        distance = entered_distance / 2.0 if axis == AXES.index("T") else entered_distance
+        distance = entered_distance / T_AXIS_DISPLAY_SCALE if axis == T_AXIS_INDEX else entered_distance
 
         self.footer_text.set("Setting %s manual distance…" % AXES[axis])
         def done(value, error):
@@ -1272,7 +2018,7 @@ class MotionApp(tk.Tk):
             return
         self.program_text.delete("1.0", "end")
         self.current_file = None
-        self.title("MCC4 Motion Control — English")
+        self.title("MCC4 Motion and Temperature Control GUI")
 
     def file_open(self):
         path = filedialog.askopenfilename(parent=self, title="Open program", filetypes=[("G-code / text", "*.gcode *.nc *.txt"), ("All files", "*.*")])
@@ -1284,7 +2030,7 @@ class MotionApp(tk.Tk):
         self.program_text.delete("1.0", "end")
         self.program_text.insert("1.0", text)
         self.current_file = Path(path)
-        self.title("%s — MCC4 Motion Control" % self.current_file.name)
+        self.title("%s — MCC4 Motion and Temperature Control GUI" % self.current_file.name)
         self.footer_text.set("Opened " + str(self.current_file))
 
     def file_save(self):
@@ -1308,7 +2054,7 @@ class MotionApp(tk.Tk):
     def file_close(self):
         self.program_text.delete("1.0", "end")
         self.current_file = None
-        self.title("MCC4 Motion Control — English")
+        self.title("MCC4 Motion and Temperature Control GUI")
 
     def download_parameters(self):
         if not self.connected:
@@ -1340,7 +2086,10 @@ class MotionApp(tk.Tk):
                                        (8, self.neg_vars[axis]), (9, self.pos_vars[axis])):
                         text = var.get().strip()
                         if text:
-                            self.params[base+index] = self._number(text, PARAMETERS[index])
+                            value = self._number(text, PARAMETERS[index])
+                            if axis == T_AXIS_INDEX and index in (8, 9):
+                                value /= T_AXIS_DISPLAY_SCALE
+                            self.params[base+index] = value
                     signal = self.params[base+6] or 0
                     signal = self._set_flag(signal, 32, self.soft_vars[axis].get())
                     signal = self._set_flag(signal, 64, self.hard_vars[axis].get())
@@ -1462,7 +2211,12 @@ class MotionApp(tk.Tk):
         ttk.Button(frame, text="Close", command=win.destroy).pack(anchor="e", pady=(8, 0))
 
     def about(self):
-        messagebox.showinfo("About", "MCC4 Motion Control — English\n\nPython/Tkinter front end for the vendor MCC4DLL controller API.\nThe original MCCDEMO application is not modified by this interface.", parent=self)
+        messagebox.showinfo(
+            "MCC4 Motion and Temperature Control GUI",
+            "MCC4 Motion and Temperature Control GUI\n\n"
+            "Python/Tkinter interface for the MCC4 motion controller and the Onway temperature controller.\n"
+            "The original MCCDEMO application is not modified by this interface.",
+            parent=self)
 
     def close_app(self):
         if self.program_active and not messagebox.askyesno("Program active", "Stop the active program and close?", parent=self):
@@ -1473,6 +2227,8 @@ class MotionApp(tk.Tk):
             self.manual_command_queue.clear()
             self.manual_queue_stop_pending = False
         if self.poll_stop: self.poll_stop.set()
+        self.temperature_worker.stop()
+        self.temperature_worker.join(timeout=2.5)
         try:
             if self.connected:
                 with self.manual_dispatch_lock:
@@ -1499,7 +2255,7 @@ class ParameterDialog(tk.Toplevel):
                       for a in range(4)] for p in range(10)]
         outer = ttk.Frame(self, padding=14); outer.pack(fill="both", expand=True)
         ttk.Label(outer, text="Controller parameters by axis", style="Section.TLabel").pack(anchor="w")
-        ttk.Label(outer, text="Parameter indexes follow the vendor DLL. T Manual distance is displayed doubled (180 here writes 90); edits are sent only when you choose Upload.", style="Hint.TLabel", wraplength=900).pack(anchor="w", pady=(2, 10))
+        ttk.Label(outer, text="Parameter indexes follow the vendor DLL. T manual distance and soft limits are displayed doubled (180 here writes 90); edits are sent only when you choose Upload.", style="Hint.TLabel", wraplength=900).pack(anchor="w", pady=(2, 10))
         table = ttk.Frame(outer); table.pack(fill="both", expand=True)
         ttk.Label(table, text="Parameter", width=28, style="Hint.TLabel").grid(row=0, column=0, sticky="w", padx=4, pady=4)
         for a, axis in enumerate(AXES):
@@ -1539,8 +2295,8 @@ class ParameterDialog(tk.Toplevel):
     def _display_parameter(self, value, axis, parameter):
         if value is None:
             return ""
-        if parameter == 0 and axis == AXES.index("T"):
-            value *= 2
+        if axis == T_AXIS_INDEX and parameter in (0, 8, 9):
+            value *= T_AXIS_DISPLAY_SCALE
         return self.app._fmt_param(value)
 
     def _read_entries(self):
@@ -1552,8 +2308,8 @@ class ParameterDialog(tk.Toplevel):
                     continue
                 try:
                     value = float(raw)
-                    if p == 0 and a == AXES.index("T"):
-                        value /= 2.0
+                    if a == T_AXIS_INDEX and p in (0, 8, 9):
+                        value /= T_AXIS_DISPLAY_SCALE
                     values[a*10+p] = value
                 except ValueError:
                     raise ValueError("Parameter %d for axis %s must be numeric." % (p, AXES[a]))

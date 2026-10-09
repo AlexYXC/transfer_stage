@@ -1,11 +1,13 @@
-MCC4 Motion Control — English Python GUI
-========================================
+MCC4 Motion and Temperature Control GUI
+=======================================
 
 This is a separate English interface for the MCC4 four-axis controller. It
 calls the supplied MCC4DLL.dll through a small 32-bit .NET bridge. The original
 MCCDEMO application and its files are not modified by this interface.
-Use only one controller application at a time: close MCCDEMO before connecting
-here, because both programs need exclusive use of the same serial port.
+Use only one motion controller application at a time: close MCCDEMO before
+connecting here, because both programs need exclusive use of the motion
+controller's serial port. Close the separate Onway temperature GUI before
+connecting the integrated Temperature Control tab to the same COM port.
 
 Start
 -----
@@ -38,6 +40,32 @@ Main controls
   Save To ROM stores the current controller parameters in controller memory.
 * Other contains the demo's serial debug, joystick, communication test, COM
   assistant, and extended digital-output controls.
+
+Temperature control tab
+-----------------------
+The Temperature Control tab starts with a wanted-temperature default of 200 °C
+and accepts values from 190 to 325 °C. In wanted-temperature mode, before writing Segment 1, it converts the
+input to the module set temperature with
+`1.41442716 * (wanted_temperature - 6.19)`. The converted set temperature is
+displayed beside the temperature adjustment buttons; the live measured
+temperature is centered in its own section. The “Set module temperature
+directly” checkbox grays out the wanted-temperature input and enables direct
+editing of the module setpoint. Direct mode bypasses the calibration and
+wanted-temperature range; the converted or direct value must still fit the
+controller's register. The tab also includes
+heating and holding times, power limit, Start/Stop, curve recording, CSV
+export, and curve clearing. The right column has Heating Module buttons above
+the PID Values panel and the temperature controller connection below it. The
+PID panel reads and sets P, I, and D; its note gives defaults of P=150, I=15,
+and D=3. PID fields use raw integer register values; their units and valid
+tuning ranges depend on the controller. Heating is started with
+“Start Heating” and stopped with “Stop Heating Module”. It connects to
+COM5 by default using 9600 baud, 8 data bits, no parity, 1 stop bit, and Modbus
+device ID 10.
+Choose the temperature controller's port in that tab if it uses a different
+COM port. The temperature and motion controllers must use different COM ports
+while both are connected. Temperature serial communication runs through the
+bridge and does not require additional Python packages.
 
 Limit status
 ------------
