@@ -29,8 +29,6 @@ LIMIT_BITS = {"X-": 9, "X+": 10, "Y-": 6, "Y+": 7,
               "Z-": 3, "Z+": 4, "T-": 0, "T+": 1}
 TEMP_SETPOINT_SCALE = 1.41442716
 TEMP_SETPOINT_OFFSET = 6.19
-TEMP_WANTED_MIN = 190.0
-TEMP_WANTED_MAX = 325.0
 
 
 class BridgeError(RuntimeError):
@@ -368,6 +366,7 @@ class MotionApp(tk.Tk):
         self.port_var = tk.StringVar(value="COM4")
         self.temp_port_var = tk.StringVar(value="COM5")
         self.temp_status_var = tk.StringVar(value="Connecting to COM5...")
+        self.temp_module_status_var = tk.StringVar(value="Status: Unknown")
         self.temp_record_duration_var = tk.StringVar(value="Collection time: 00 min 00 sec")
         self.temp_current_var = tk.StringVar(value="--.- °C")
         self.temp_estimated_wanted_var = tk.StringVar(value="--.- °C")
@@ -733,6 +732,11 @@ class MotionApp(tk.Tk):
             heating_panel, text="Stop Heating Module",
             command=lambda: self._write_temperature_run(False))
         self.temp_stop_button.pack(fill="x")
+        self.temp_module_status_label = ttk.Label(
+            heating_panel, textvariable=self.temp_module_status_var,
+            anchor="center", style="Hint.TLabel")
+        self.temp_module_status_label.pack(fill="x", pady=(8, 0))
+        self._set_heating_module_status(None)
 
         pid_panel = ttk.LabelFrame(right, text="PID Values", padding=10)
         pid_panel.pack(fill="x")
@@ -795,8 +799,8 @@ class MotionApp(tk.Tk):
 
         settings = ttk.LabelFrame(left, text="Temperature Control", padding=10)
         settings.pack(fill="x", pady=(0, 8))
-        for column, weight in ((1, 0), (2, 0), (3, 0), (4, 0), (5, 0)):
-            settings.columnconfigure(column, weight=weight)
+        for column in range(1, 8):
+            settings.columnconfigure(column, weight=0)
 
         ttk.Label(settings, text="Wanted Temp (°C)").grid(row=0, column=0, sticky="w", padx=(0, 8), pady=4)
         self.temp_target_entry = ttk.Entry(settings, textvariable=self.temp_target_var, width=12, justify="right")
@@ -805,21 +809,24 @@ class MotionApp(tk.Tk):
         temp_plus = ttk.Button(settings, text="+", width=4, command=self.increase_temperature)
         temp_minus = ttk.Button(settings, text="−", width=4, command=self.decrease_temperature)
         temp_plus.grid(row=0, column=2, padx=(3, 1), pady=4)
-        temp_minus.grid(row=0, column=3, padx=(1, 8), pady=4)
-        ttk.Label(settings, text="Module Set Temp (°C)").grid(row=0, column=4, sticky="w", padx=(0, 6), pady=4)
+        temp_minus.grid(row=0, column=3, padx=(1, 5), pady=4)
+        self.temp_target_apply_button = ttk.Button(
+            settings, text="Apply", width=7, command=self.write_temperature_target)
+        self.temp_target_apply_button.grid(row=0, column=4, padx=(2, 8), pady=4)
+        ttk.Label(settings, text="Module Set Temp (°C)").grid(row=0, column=5, sticky="w", padx=(0, 6), pady=4)
         self.temp_machine_set_entry = ttk.Entry(
             settings, textvariable=self.temp_machine_set_var, width=10, justify="right")
-        self.temp_machine_set_entry.grid(row=0, column=5, sticky="w", pady=4)
+        self.temp_machine_set_entry.grid(row=0, column=6, sticky="w", pady=4)
         self.temp_machine_set_entry.bind(
             "<Return>", lambda _event: self.write_machine_set_temperature())
         self.temp_machine_set_button = ttk.Button(
             settings, text="Set", width=5, command=self.write_machine_set_temperature)
-        self.temp_machine_set_button.grid(row=0, column=6, padx=(5, 0), pady=4)
+        self.temp_machine_set_button.grid(row=0, column=7, padx=(5, 0), pady=4)
         ttk.Checkbutton(
             settings, text="Set module temperature directly",
             variable=self.temp_manual_machine_var,
             command=self._toggle_temperature_input_mode
-        ).grid(row=1, column=4, columnspan=3, sticky="w", padx=(0, 4), pady=4)
+        ).grid(row=1, column=5, columnspan=3, sticky="w", padx=(0, 4), pady=4)
 
         ttk.Label(settings, text="Heating Time (min)").grid(row=1, column=0, sticky="w", padx=(0, 8), pady=4)
         self.temp_heat_entry = ttk.Entry(settings, textvariable=self.temp_heat_var, width=16, justify="right")
@@ -839,8 +846,8 @@ class MotionApp(tk.Tk):
         power_minus = ttk.Button(settings, text="−", width=4, command=self.decrease_temperature_power)
         power_plus.grid(row=3, column=2, padx=(8, 2), pady=4)
         power_minus.grid(row=3, column=3, padx=2, pady=4)
-        ttk.Label(settings, text="Wanted mode: 190–325 °C with calibration. Direct mode bypasses that range and calibration; the controller register limit still applies. Max measured module temperature: 235 °C.",
-                  style="Hint.TLabel", wraplength=780).grid(row=4, column=0, columnspan=7, sticky="w", pady=(6, 0))
+        ttk.Label(settings, text="Warning: calibration was characterized for wanted temperatures from 190–325 °C; values outside this range are extrapolated. Direct module mode bypasses calibration. Controller register limits still apply. Max measured module temperature: 235 °C.",
+                  style="Hint.TLabel", wraplength=780).grid(row=4, column=0, columnspan=8, sticky="w", pady=(6, 0))
 
         curve_box = ttk.LabelFrame(left, text="Temperature Curve", padding=10)
         curve_box.pack(fill="both", expand=True, pady=(0, 8))
@@ -861,7 +868,7 @@ class MotionApp(tk.Tk):
                        self.temp_export_button, self.temp_clear_button):
             widget.pack(side="left", padx=(0, 6))
 
-        self.temp_wanted_controls = [self.temp_target_entry, temp_plus, temp_minus]
+        self.temp_wanted_controls = [self.temp_target_entry, temp_plus, temp_minus, self.temp_target_apply_button]
         self.temp_machine_controls = [self.temp_machine_set_entry, self.temp_machine_set_button]
         self.temp_write_controls = [
             self.temp_heat_entry, self.temp_hold_entry, self.temp_power_entry,
@@ -970,8 +977,6 @@ class MotionApp(tk.Tk):
     def write_temperature_target(self):
         try:
             value = float(self.temp_target_var.get())
-            if not TEMP_WANTED_MIN <= value <= TEMP_WANTED_MAX:
-                raise ValueError("Wanted temperature must be from 190 to 325 °C.")
             raw = self._machine_setpoint_raw(value)
             if not 0 <= raw <= 65535:
                 raise ValueError("Converted module setpoint must fit in one controller register.")
@@ -1040,14 +1045,12 @@ class MotionApp(tk.Tk):
         self._submit_temperature([("register", name, value)], "%s value saved" % name)
 
     def increase_temperature(self):
-        value = self._wanted_temperature_value()
-        value = TEMP_WANTED_MIN if value < TEMP_WANTED_MIN else min(TEMP_WANTED_MAX, value + 1)
+        value = self._wanted_temperature_value() + 1
         self.temp_target_var.set("%g" % value)
         self.write_temperature_target()
 
     def decrease_temperature(self):
-        value = self._wanted_temperature_value()
-        value = TEMP_WANTED_MIN if value <= TEMP_WANTED_MIN else max(TEMP_WANTED_MIN, value - 1)
+        value = self._wanted_temperature_value() - 1
         self.temp_target_var.set("%g" % value)
         self.write_temperature_target()
 
@@ -1071,6 +1074,17 @@ class MotionApp(tk.Tk):
         self._submit_temperature([("coil", "run", start)],
                                  "Started" if start else "Stopped",
                                  priority_stop=not start)
+
+    def _set_heating_module_status(self, is_on):
+        if is_on is None:
+            text, color = "Status: Unknown", "#64748b"
+        elif is_on:
+            text, color = "Status: ON", "#15803d"
+        else:
+            text, color = "Status: OFF", "#b91c1c"
+        self.temp_module_status_var.set(text)
+        if hasattr(self, "temp_module_status_label"):
+            self.temp_module_status_label.configure(foreground=color)
 
     def start_temperature_recording(self):
         self.temp_samples = []
@@ -1461,6 +1475,10 @@ class MotionApp(tk.Tk):
                     _, message, detail = item
                     self.temp_status_var.set(message)
                     self.temp_status_tooltip.text = detail or message
+                    if message == "Started":
+                        self._set_heating_module_status(True)
+                    elif message == "Stopped":
+                        self._set_heating_module_status(False)
                 elif item[0] == "temp_initial":
                     values = item[1]
                     self.temp_power_var.set(str(int(values["seg1_power"])))

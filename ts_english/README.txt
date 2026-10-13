@@ -44,15 +44,16 @@ Main controls
 Temperature control tab
 -----------------------
 The Temperature Control tab starts with a wanted-temperature default of 200 °C
-and accepts values from 190 to 325 °C. In wanted-temperature mode, before writing Segment 1, it converts the
-input to the module set temperature with
+and accepts wanted temperatures that produce setpoints within the controller's
+register limits. Calibration was characterized for wanted temperatures from
+190 to 325 °C; values outside that range are extrapolated. In wanted mode, it
+converts the input to the module set temperature with
 `1.41442716 * (wanted_temperature - 6.19)`. The converted set temperature is
 displayed beside the temperature adjustment buttons; the live measured
 temperature is centered in its own section. The “Set module temperature
 directly” checkbox grays out the wanted-temperature input and enables direct
-editing of the module setpoint. Direct mode bypasses the calibration and
-wanted-temperature range; the converted or direct value must still fit the
-controller's register. The tab also includes
+editing of the module setpoint. Direct mode bypasses the calibration. Converted
+or direct module setpoints must still fit the controller's register. The tab also includes
 heating and holding times, power limit, Start/Stop, curve recording, CSV
 export, and curve clearing. The right column has Heating Module buttons above
 the PID Values panel and the temperature controller connection below it. The
