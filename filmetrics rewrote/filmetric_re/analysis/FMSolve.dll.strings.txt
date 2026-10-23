@@ -1,0 +1,36 @@
+# strings of interest: FMSolve.dll
+
+## usb/driver (4)
+  (AObsolete Jellison nitride
+  CreateFile2
+  CreateFileW
+  cointerface 
+
+## i2c/proto/cmd (25)
+  (0,0004080<0@0D0H0L0P0T0X0\0`0d0h0l0p0t0x0|0
+  (0.090>0R0X0m0r0w0|0
+  ,SVWj0X
+  -t*j0X;
+  0 0(00080@0H0P0X0`0h0p0x0
+  0#0-070x0
+  0(040@0L0X0d0p0|0
+  0d0t0x0
+  40X0n0
+  F0K0]0x0
+  FLT_STACK_CHECK
+  FreeLibraryWhenCallbackReturns
+  GetCommandLineA
+  GetCurrentPackageId
+  GetProcAddress
+  Initializing ZARE: #Stacks=%i, ZareStackIdx=%i, ZareLayerIdx=%i
+  J0\0x0
+  STACK_OVERFLOW
+  SetThreadStackGuarantee
+  WaitForThreadpoolTimerCallbacks
+  Wj0XPV
+  Z0X03
+  j0Xf;
+  location: %f, the exception is 0x%08X: %s 
+  u'j0X
+
+## com/reg (0)

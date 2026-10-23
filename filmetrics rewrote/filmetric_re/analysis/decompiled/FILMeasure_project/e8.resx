@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+<resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>1.3</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><data name="CheckBoxLuminousReflectance.ToolTip" xml:space="preserve"><value>Calculate Luminous Reflectance and/or Transmittance, which is the weighted average of the spectrum.
+Calculation uses the product of the measured spectrum, a D65 irradiance, and the human eye efficiency
+as defined in ISO 13666:2012.</value></data>
+  <data name="CheckBoxYID1925.ToolTip" xml:space="preserve"><value>Calculate Yellowness Index (YI) per ASTM D1925.
+Calculation uses the product of the measured spectrum and Illuminance C with a 2 degree observer,
+ together with the equation 100*(1.2750X - 1.0576Z)/Y. 
+Note that since ASTM D1925 is only defined for Illuminant C and a 2 degree observer, the setting for
+ Illuminant and Observer in the Setup-&gt;Display dialog are ignored when computing YI D1925.</value></data>
+  <data name="TextBoxNumGrading.ToolTip" xml:space="preserve"><value>Amount of compositional grading in layer, expressed as a density percentage between -100% to 100%.
+
+Setting a grading of 100% means that the material density at one interface is the same as vacuum and
+the material density at the other interface is 200% of its nominal value.
+
+Positive values for grading mean that the material density nearest the Substrate is greater than
+the material density farthest from the Substrate.</value></data>
+  <data name="NumericUpDownRequiredPeaks.ToolTip" xml:space="preserve"><value>If number of peaks detected in spectrum is less than expected,
+ number of peaks that must be detected when automatically positioning peaks.
+For example, if a polished Si wafer has 3 peaks, this parameter may be set to 2 in order to
+ concentrate on positioning the first two peaks.</value></data>
+  <data name="CheckBoxHardLimits_1.ToolTip" xml:space="preserve"><value>Find max/min value between wavelength limits.
+
+Unchecked:
+Find max/min extremum within wavelength limits.
+If max/min value is at start wavelength, continue searching to shorter wavelengths.
+If max/imn value is at end wavelength, continue searching to longer wavelengths.</value></data>
+  </root>

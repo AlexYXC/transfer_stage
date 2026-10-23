@@ -1,0 +1,24 @@
+MODULE | IMPORT_ENTRY | MANAGED_OWNER::method
+--------------------------------------------------------------------------------
+Advapi32.dll | SetSecurityDescriptorDacl | ?::SetSecurityDescriptorDacl
+Kernel32.dll | IsWow64Process | ?::IsWow64Process
+advapi32.DLL | InitializeSecurityDescriptor | ?::InitializeSecurityDescriptor
+advapi32.dll | GetTokenInformation | ?::GetTokenInformation
+advapi32.dll | OpenProcessToken | ?::OpenProcessToken
+kernel32.dll | CloseHandle | ?::CloseHandle
+kernel32.dll | ConnectNamedPipe | ?::ConnectNamedPipe
+kernel32.dll | CreateFile | ?::CreateFile
+kernel32.dll | CreateNamedPipe | ?::CreateNamedPipe
+kernel32.dll | CreateNamedPipe | ?::CreateNamedPipe
+kernel32.dll | DisconnectNamedPipe | ?::DisconnectNamedPipe
+kernel32.dll | GetCurrentProcess | ?::GetCurrentProcess
+kernel32.dll | GetCurrentProcess | ?::GetCurrentProcess
+kernel32.dll | GetModuleHandle | ?::GetModuleHandle
+kernel32.dll | GetProcAddress | ?::GetProcAddress
+kernel32.dll | GlobalAlloc | ?::GlobalAlloc
+kernel32.dll | ReadFile | ?::ReadFile
+kernel32.dll | WriteFile | ?::WriteFile
+shell32.dll | SHChangeNotify | ?::SHChangeNotify
+shell32.dll | SetProgressState | ?::SetProgressState
+shell32.dll | SetProgressValue | ?::SetProgressValue
+user32.dll | FlashWindowEx | ?::FlashWindowEx

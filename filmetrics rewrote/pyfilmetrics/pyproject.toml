@@ -1,0 +1,15 @@
+[project]
+name = "pyfilmetrics"
+version = "0.1.0"
+description = "Clean-room reimplementation of Filmetrics FILMeasure device-control + measurement core"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy"]
+
+[project.optional-dependencies]
+gui = ["PySide6"]
+device = ["comtypes"]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --basetemp=.pytmp"

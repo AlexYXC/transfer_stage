@@ -1,0 +1,2362 @@
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum b:
+    a = -1
+    b = 0
+    c = 1
+    d = 2
+enum c:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum MeasurementTimingType:
+    Recommended = 0
+    Maximum = 1
+    Manual = 2
+    NumMeasTimings = 3
+enum e:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum f:
+    a = 0
+    b = 1
+    c = 2
+enum g:
+    a = 0
+    b = 1
+enum h:
+    a = 0
+    b = 1
+enum i:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+    n = 13
+    o = 14
+    p = 15
+    q = 16
+    r = 17
+    s = 18
+    t = 19
+    u = 20
+    v = 21
+    w = 22
+    x = 23
+    y = 24
+    z = 25
+    aa = 26
+    ab = 27
+    ac = 28
+    ad = 29
+    ae = 30
+    af = 31
+    ag = 32
+    ah = 33
+    ai = 34
+    aj = 35
+    ak = 36
+    al = 37
+    am = 38
+    an = 39
+    ao = 40
+    ap = 41
+    aq = 42
+    ar = 43
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+    n = 13
+    o = 14
+    p = 15
+    q = 16
+    r = 17
+    s = 18
+    t = 19
+    u = 20
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+    h = 8
+    i = 9
+    j = 10
+    k = 11
+    l = 12
+    m = 13
+    n = 14
+    o = 15
+    p = 16
+    q = 17
+    r = 18
+    s = 19
+    t = 20
+    u = 21
+    v = 22
+    w = 23
+    x = 24
+    y = 25
+    z = 26
+    aa = 27
+    ab = 28
+    ac = 29
+    ad = 30
+    ae = 31
+    af = 32
+    ag = 33
+    ah = 34
+    ai = 35
+    aj = 36
+    ak = 37
+    al = 38
+    am = 39
+    an = 40
+    ao = 41
+    ap = 42
+    aq = 43
+    ar = 44
+    as = 45
+    at = 46
+    au = 47
+    av = 48
+    aw = 49
+    ax = 50
+    ay = 51
+    az = 52
+    a0 = 53
+    a1 = 54
+    a2 = 55
+    a3 = 56
+    a4 = 57
+    a5 = 58
+    a6 = 59
+    a7 = 60
+    a8 = 61
+    a9 = 62
+    ba = 63
+    bb = 64
+    bc = 65
+    bd = 66
+    be = 67
+    bf = 68
+    bg = 69
+    bh = 70
+    bi = 71
+    bj = 72
+    bk = 73
+    bl = 74
+    bm = 75
+    bn = 76
+    bo = 77
+    bp = 78
+    bq = 79
+    br = 80
+    bs = 81
+    bt = 82
+    bu = 83
+    bv = 84
+    bw = 85
+    bx = 86
+    by = 87
+    bz = 88
+    b0 = 89
+    b1 = 90
+    b2 = 91
+    b3 = 92
+    b4 = 93
+enum TaskExecutionType:
+    None = 0
+    All = 1
+    Spectrometer = 2
+    SpectrometerNonSpectrum = 3
+    SpectrometerTestAndCal = 4
+    MeasEngine = 5
+    Setup = 6
+    Camera = 7
+    Execution = 8
+    VideoCamera = 9
+    StageSpec = 10
+    System = 11
+    Photodiode = 12
+    ZStageSpec = 13
+    ScatterBox = 14
+    WaferHandler = 15
+    LightTower = 16
+    CassetteBarcodeReader = 17
+    Secs_GEM = 18
+enum n:
+    a = -1
+    b = 0
+    c = 1
+    d = 2
+    e = 3
+    f = 4
+    g = 5
+    h = 6
+    i = 7
+    j = 8
+    k = 9
+    l = 10
+    m = 11
+    n = 12
+    o = 13
+enum o:
+    a = -1
+    b = 0
+    c = 1
+    d = 2
+    e = 3
+    f = 4
+    g = 5
+    h = 6
+    i = 7
+    j = 8
+    k = 9
+enum CameraVideoTaskType:
+    SetFocus = 0
+    SetZoom = 1
+    SetScroll = 2
+    InitCamera = 3
+    StartVideo = 4
+    StopVideo = 5
+    SettingsFromDialog = 6
+    CalibrateSpot = 7
+    ConfigVideoSettingFromUI = 8
+    DeAllocation = 9
+    ChangeVideoImageRotation = 10
+    ContinuousImage = 11
+    ReinitCamera = 12
+    TestCanRunVideo = 13
+enum v:
+    a = -1
+    b = 0
+    c = 1
+    d = 2
+    e = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+enum a:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+enum c:
+    a = -1001
+    b = -1002
+    c = -1003
+    d = -1004
+    e = -1005
+    f = -1006
+    g = -1007
+    h = -1008
+    i = -1009
+    j = -1010
+    k = -1011
+    l = -1012
+    m = -1013
+    n = -1014
+    o = -1015
+    p = -1016
+    q = -1017
+    r = -1018
+    s = -1019
+    t = -1020
+    u = -1021
+enum a:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum b:
+    a = 0
+    b = 1
+enum c:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum bz:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+enum FIDeviceErr:
+    None = 0
+    Generic = 1
+    USBEnumError = 2
+    USBInitError = 3
+    USBSpecAcquisitionError = 4
+    USBNoDevices = 5
+    USBCorruptedDevice = 6
+    StageInitError = 7
+    USBFirmwareNeedsUpdate = 8
+    USBDeviceHardwareFailure = 9
+    FiberMuxInitError = 10
+    FIUsbIntCOMError = 11
+    FIUsbIntTooOld = 12
+    FIUsbIntXPVerError = 13
+    FIUsbIntFileNotFoundError = 14
+    WaferHandlerInitError = 15
+    USBSpecConflict = 16
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum ErrPublic:
+    None = 0
+    Generic = 1
+    SolverArgs = 2
+    Solver = 3
+    NoLayersSelectedForMeasurement = 4
+    SolvingAborted = 5
+    InitNKCoeffsInvalid = 6
+    InvalidDConstraints = 7
+    InvalidNConstraints = 8
+    InvalidKConstraints = 9
+    InvalidMixtureData = 10
+    InsufficientData = 11
+    InvalidSolarData = 12
+    InvalidIlluminanceData = 13
+    OutOfCorrelativeRange = 14
+    ModelCoeffIncompatWithInitialN = 15
+    ModelCoeffIncompatWithInitialK = 16
+    OnlyExactSpectrumAnalysisPermittedForRAtAngle = 17
+    ZAREModelUsedInMultipleLayersWithinSingleStack = 18
+    ZAREAttemptToSolveForKWithoutTrans = 19
+    ZAREAttemptToSolveForXKWithoutReflTrans = 20
+    ZAREAttemptToSolveForNWithoutRAngle = 21
+    ZAREAttemptToSolveForDNWithoutRAngle = 22
+    ZAREAttemptToSolveForDNWithoutR0OrT = 23
+    ZAREAttemptToSolveForDNKWithoutDoubleRefl = 24
+    ZAREInsufficientWavelengthOverlapBetweenSpectrumTypes = 25
+    ZAREMismatchedSolveForDInSameLayers = 26
+    ZAREIndependentDForSameNorK = 27
+    ZAREDesignError = 28
+enum a:
+    a = 0
+    b = 0
+    c = 1
+    d = 2
+    e = 3
+    f = 4
+enum b:
+    a = 0
+    b = 0
+    c = 1
+    d = 2
+    e = 3
+    f = 4
+    g = 5
+enum c:
+    a = 6
+    b = 0
+    c = 0
+    d = 1
+    e = 1
+    f = 2
+    g = 3
+    h = 4
+    i = 5
+enum d:
+    a = 7
+    b = 0
+    c = 0
+    d = 1
+    e = 1
+    f = 2
+    g = 3
+    h = 4
+    i = 5
+    j = 6
+enum e:
+    a = 9
+    b = 0
+    c = 0
+    d = 1
+    e = 1
+    f = 2
+    g = 3
+    h = 4
+    i = 5
+    j = 6
+    k = 7
+    l = 8
+enum f:
+    a = 3
+    b = 0
+    c = 1
+    d = 2
+enum g:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum h:
+    a = 1
+    b = 2
+enum i:
+    a = 1
+    b = 2
+    c = 3
+enum j:
+    a = 0
+    b = 1
+enum n:
+    a = 0
+    b = 1
+    c = 2
+enum o:
+    a = 0
+    b = 1
+enum d:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+    n = 13
+    o = 14
+    p = 15
+    q = 16
+    r = 17
+    s = 18
+    t = 19
+    u = 20
+    v = 21
+enum j:
+    a = 0
+    b = 1
+    c = 2
+enum k:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+enum l:
+    a = 11
+    b = 12
+    c = 13
+    d = 14
+    e = 15
+    f = 16
+    g = 17
+    h = 18
+    i = 19
+    j = 20
+    k = 21
+    l = 22
+    m = 23
+    n = 24
+    o = 25
+    p = 26
+    q = 27
+    r = 28
+    s = 29
+    t = 30
+    u = 31
+    v = 32
+    w = 33
+    x = 34
+    y = 35
+    z = 36
+    aa = 37
+    ab = 38
+    ac = 39
+    ad = 40
+    ae = 41
+    af = 42
+    ag = 43
+    ah = 44
+    ai = 45
+    aj = 46
+    ak = 47
+    al = 48
+    am = 49
+    an = 50
+    ao = 51
+    ap = 52
+    aq = 53
+    ar = 54
+    as = 55
+    at = 56
+    au = 57
+    av = 58
+    aw = 59
+    ax = 60
+    ay = 61
+    az = 62
+    a0 = 63
+    a1 = 64
+    a2 = 65
+    a3 = 66
+enum m:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+enum n:
+    a = 0
+    b = 1
+    c = 2
+enum o:
+    a = 0
+    b = 1
+    c = 2
+enum p:
+    a = 0
+    b = 1
+enum q:
+    a = 0
+    b = 1
+    c = 2
+enum ErrPublic:
+    None = 0
+    Generic = 1
+    Hardware = 2
+    MeasModule = 3
+    Video = 4
+    StartupRecipeLoadWarning = 5
+    StartupCTMFirmwareCompatibilityWarning = 6
+    ScatterStationNoUniqueSystemError = 7
+    ScatterStationTooManyStationsError = 8
+    ScatterStationTooFewControllersWarning = 9
+    ScatterStationTooManyControllersWarning = 10
+    StartupModuleControllersOutOfSyncWarning = 11
+    StartupNumExpectedControllersNotFoundWarning = 12
+    StartupNumExpectedSubModulesNotFoundWarning = 13
+    ScatterStationNoFiberMuxWarning = 14
+    StartupNotchFlatFindSpecNotFoundWarning = 15
+    StartupNotchFlatFindSpecUnexpectedWarning = 16
+    StartupNotchFlatFindSpecUsedForMeasWarning = 17
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+enum b:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+enum c:
+    a = 0
+    b = 1
+enum d:
+    a = 0
+    b = 1
+    c = 2
+enum e:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+enum b:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum a:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+enum c:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+enum d:
+    a = 0
+    b = 1
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum d:
+    a = 0
+    b = 1
+enum b:
+    a = -1
+    b = -2
+enum c:
+    a = 0
+    b = 1
+enum e:
+    a = 0
+    b = 1
+    c = 2
+enum f:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum f:
+    a = 0
+    b = 1
+    c = 2
+enum g:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum h:
+    a = 0
+    b = 1
+    c = 2
+enum i:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum y:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+enum a:
+    a = 0
+    b = 1
+enum a:
+    a = 1
+    b = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 3
+    b = 4
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum ResGridColumnType:
+    Param = 0
+    Number = -1
+    MMGuid = -2
+    Sample = -3
+    Location = -4
+    Res = -5
+    SS = -6
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum m:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+enum d:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+enum e:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 0
+    c = 1
+    d = 2
+    e = 3
+    f = 4
+    g = 5
+    h = 6
+enum b:
+    a = 0
+    b = 0
+    c = 1
+    d = 1
+    e = 2
+    f = 3
+    g = 4
+    h = 5
+    i = 6
+    j = 7
+    k = 8
+enum c:
+    a = 0
+    b = -100
+    c = -101
+    d = -102
+    e = -103
+    f = -104
+    g = -105
+    h = -106
+    i = -107
+    j = -108
+    k = -109
+    l = -110
+enum d:
+    a = 0
+    b = -1
+    c = -2
+    d = -3
+    e = -4
+    f = -5
+    g = -6
+    h = -7
+    i = -8
+enum e:
+    a = -13
+    b = -10
+    c = 1
+    d = 2
+    e = 3
+    f = 4
+    g = 5
+    h = 6
+    i = 7
+    j = 8
+    k = 9
+    l = 10
+    m = 11
+    n = 12
+    o = 13
+    p = 14
+    q = 15
+    r = 16
+    s = 17
+    t = 18
+    u = 19
+    v = 20
+    w = 21
+    x = 22
+    y = 23
+    z = 24
+    aa = 25
+    ab = 26
+    ac = 27
+    ad = 28
+    ae = 29
+    af = 30
+    ag = 31
+    ah = 32
+    ai = 33
+    aj = 34
+    ak = 35
+    al = 36
+    am = 37
+    an = 38
+    ao = 39
+    ap = 40
+    aq = 41
+    ar = 42
+    as = 43
+    at = 44
+    au = 45
+    av = 46
+    aw = 47
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum d:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+    h = 8
+enum e:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum f:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+enum ErrPublic:
+    None = 0
+    Generic = 1
+    Initialization = 2
+    SpecAcquisition = 3
+    SpecAnalysis = 4
+    SpecAnalysisSetup = 5
+    SpecAnalysisFFTNoLayersSelectedForMeasure = 6
+    LockUnlock = 7
+    WavelengthRange = 8
+    NoLight = 9
+    LightTooBright = 10
+    SignalNotProportionalToIntTime = 11
+    LowSaturationIntensity = 12
+    SolvingAbortFailure = 13
+    SolvingAbortSuccess = 14
+    InitNKCoeffsInvalid = 15
+    InvalidDConstraints = 16
+    InvalidNConstraints = 17
+    InvalidKConstraints = 18
+    NoDataWithinRange = 19
+    InsufficientData = 20
+    CompositeRecipeInconsistantWithNumSpectra = 21
+    OutOfCorrelativeRange = 22
+    ModelCoeffIncompatibleWithInitialN = 23
+    ModelCoeffIncompatibleWithInitialK = 24
+    OnlyExactSpectrumAnalysisPermittedForRAtAngle = 25
+    ZAREModelUsedInMultipleLayersWithinSingleStack = 26
+    ZAREAttemptToSolveForKWithoutTrans = 27
+    ZAREAttemptToSolveForXKWithoutReflTrans = 28
+    ZAREAttemptToSolveForNWithoutRAngle = 29
+    ZAREAttemptToSolveForDNWithoutRAngle = 30
+    ZAREAttemptToSolveForDNWithoutR0OrT = 31
+    ZAREAttemptToSolveForDNKWithoutDoubleRefl = 32
+    ZAREInsufficientWavelengthOverlapBetweenSpectrumTypes = 33
+    ZAREMismatchedSolveForDInSameLayers = 34
+    ZAREIndependentDForSameNorK = 35
+    ZAREDesignError = 36
+    InvalidSolarData = 37
+    InvalidIlluminanceData = 38
+    RegMarkNotFound = 39
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = -3
+    b = -2
+    c = -1
+    d = 0
+    e = 1
+    f = 2
+    g = 3
+    h = 4
+    i = 5
+    j = 6
+    k = 7
+    l = 8
+    m = 9
+    n = 10
+enum b:
+    a = 0
+    b = 1
+enum OpticsConfigSubmoduleTypes:
+    Unknown = -1
+    ReflectanceProbe = 0
+    Transmittance = 1
+    MSReflectance = 2
+    MSTransmittance = 3
+    ContactProbeHandHeld = 4
+    ContactProbeHandHeldAutoRef = 5
+    ContactStage = 6
+    ContactStageAutoRef = 7
+    SplitterProbe = 8
+    CTMProbe = 9
+    TransCurved = 10
+    NumConfigurations = 11
+enum c:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum c:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 14
+    m = 18
+    n = 19
+    o = 20
+    p = 21
+    q = 22
+    r = 23
+    s = 24
+    t = 25
+    u = 26
+    v = 27
+    w = 28
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+    h = 8
+    i = 9
+    j = 10
+    k = 12
+    l = 13
+    m = 14
+    n = 15
+    o = 16
+    p = 17
+    q = 18
+    r = 19
+    s = 20
+    t = 21
+    u = 22
+    v = 23
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum c:
+    a = 0
+    b = 1
+    c = 2
+enum d:
+    a = 0
+    b = 1
+    c = 2
+enum e:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+enum f:
+    a = 1
+enum g:
+    a = 0
+    b = 1
+enum h:
+    a = 0
+    b = 1
+    c = 2
+enum i:
+    a = 0
+    b = 1
+    c = 2
+enum j:
+    a = 0
+    b = 1
+    c = 2
+enum k:
+    a = 0
+    b = 1
+    c = 2
+enum l:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum m:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum n:
+    a = 0
+    b = 1
+enum o:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+enum p:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+    n = 13
+    o = 14
+    p = 15
+    q = 16
+    r = 17
+    s = 18
+    t = 19
+    u = 20
+    v = 21
+    w = 22
+    x = 23
+    y = 24
+    z = 25
+    aa = 26
+    ab = 27
+    ac = 28
+    ad = 29
+    ae = 30
+    af = 31
+    ag = 32
+enum q:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+enum r:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+enum b:
+    a = 0
+    b = 1
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum d:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum e:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum hk:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum hl:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+enum FileType:
+    Fmspe = 0
+    Spe = 1
+    Csv = 2
+    Txt = 3
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+    n = 13
+    o = 14
+    p = 15
+    q = 16
+    r = 17
+enum c:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+enum d:
+    a = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum b:
+    a = 0
+    b = 1
+    c = 341
+    d = 1021
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+enum d:
+    a = 0
+    b = 1
+    c = 2
+enum e:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum f:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum g:
+    a = 0
+    b = 1
+    c = 2
+enum h:
+    a = 0
+    b = 1
+    c = 2
+enum PublicErrors:
+    None = 0
+    Failure = 1
+    LimitAlwaysAsserted = 2
+    RightLimitNonAvailable = 3
+    TimeoutWaitFinishMove = 4
+    BrakeFailure = 5
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum d:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum e:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum f:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+    h = 8
+    i = 9
+enum b:
+    a = -1
+    b = 0
+    c = 1
+enum InternalFWLicenseRequiredReason:
+    NoConnectedDevices = 0
+    DeviceValidationFailure = 1
+    ControllerValidationFailure = 2
+    AccessoryOnly = 3
+    MissingLightSource = 4
+    MissingSubSystem = 5
+    ConflictingSubSystems = 6
+    ControllerWithMissingDevices = 7
+    InitializingMotorController = 8
+    MotorBaudRateModified = 9
+    TestingDOUTToDINConnection = 10
+    InitializeLinearMotor = 11
+    SettingLinearMicrostepResolution = 12
+    SettingLinearSoftStopFlag = 13
+    InitializingRotaryMotor = 14
+    SettingRotaryMicrostepResolution = 15
+    SettingRotarySoftStopFlag = 16
+    InitializingZMotor = 17
+    SettingZMicrostepResolution = 18
+    SettingZSoftStopFlag = 19
+    InitializingYMotor = 20
+    SettingYMicrostepResolution = 21
+    SettingYSoftStopFlag = 22
+    InitializingXMotor = 23
+    SettingXMicrostepResolution = 24
+    SettingXSoftStopFlag = 25
+    EnergizingMotors = 26
+    USBFirmwareNeedsUpdate = 27
+    MisProgrammedMinIntTime = 28
+    InitializingWaferHandler = 29
+    InitializingPrealigner = 30
+    InsufficientVacuum = 31
+    MissingHardware = 32
+    NotchFlatFindSpectrometerNotFound = 33
+    NotchFlatFindSpectrometerUnexpected = 34
+    NotchFlatFindSpectrometerOrphan = 35
+    MisprogrammedControllerSN = 36
+enum LinearActuatorType:
+    Legacy = 0
+    Hiwin = 1
+    Reserved1 = 2
+    Reserved2 = 3
+enum h7:
+    a = 0
+    b = 1
+enum h8:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+enum h9:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+enum b:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+enum r:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum a:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum c:
+    a = 0
+    b = 1
+enum d:
+    a = 0
+    b = 1
+enum e:
+    a = 0
+    b = 1
+enum a:
+    a = 0
+    b = 1
+    c = 2
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum e:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+    h = 8
+    i = 9
+    j = 10
+    k = 11
+    l = 12
+    m = 13
+    n = 14
+    o = 15
+    p = 16
+    q = 17
+    r = 18
+    s = 19
+    t = 20
+    u = 21
+    v = 22
+    w = 23
+    x = 24
+    y = 25
+    z = 26
+    aa = 27
+    ab = 28
+    ac = 29
+    ad = 30
+    ae = 31
+    af = 32
+    ag = 33
+    ah = 34
+    ai = 35
+    aj = 36
+    ak = 37
+    al = 38
+    am = 39
+    an = 40
+    ao = 41
+    ap = 42
+    aq = 43
+    ar = 44
+    as = 45
+    at = 46
+    au = 47
+    av = 48
+    aw = 49
+    ax = 50
+    ay = 51
+    az = 52
+    a0 = 53
+    a1 = 54
+    a2 = 55
+    a3 = 56
+    a4 = 57
+    a5 = 58
+    a6 = 59
+    a7 = 60
+    a8 = 61
+    a9 = 62
+    ba = 63
+    bb = 64
+    bc = 65
+    bd = 66
+    be = 67
+    bf = 68
+    bg = 69
+    bh = 70
+    bi = 71
+    bj = 72
+    bk = 73
+    bl = 74
+enum a:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum b:
+    a = 0
+    b = 1
+    c = 2
+enum c:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+    h = 8
+    i = 9
+    j = 10
+    k = 11
+    l = 12
+    m = 13
+    n = 14
+    o = 15
+enum d:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+    m = 12
+enum e:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum f:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+enum g:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+enum l:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+enum b:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 12
+enum c:
+    a = 0
+    b = 1
+    c = 2
+    d = 4
+    e = 8
+enum a:
+    a = 1
+    b = 2
+    c = 3
+enum b:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    e = 5
+    f = 6
+    g = 7
+    h = 8
+    i = 9
+    j = 10
+    k = 11
+    l = 12
+    m = 13
+    n = 14
+    o = 15
+    p = 16
+    q = 17
+    r = 18
+    s = 19
+    t = 20
+    u = 21
+    v = 22
+    w = 23
+    x = 24
+    y = 25
+    z = 26
+    aa = 27
+    ab = 28
+    ac = 29
+enum a:
+    a = 1
+    b = 2
+    c = 3
+enum a:
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+enum b:
+    a = 1
+    b = 2
+enum j:
+    a = 0
+    b = 1
+    c = 2
+    d = 3
+    e = 4
+    f = 5
+    g = 6
+    h = 7
+    i = 8
+    j = 9
+    k = 10
+    l = 11
+enum AutoUpdateLevel:
+    Alpha = 1
+    Beta = 2
+    Release = 3
+enum AcqSpectrumType:
+    ReflectanceRaw = 1
+    ReflectanceMeas = 2
+    TransmittanceRaw = 3
+    TransmittanceMeas = 4
+    CTMSignalRaw = 5
+    CTMSignalMeas = 6
+enum CalcDataType:
+    Reflectance = 0
+    Transmittance = 1
+    FFT = 2
+enum CoordinateType:
+    Lab = 0
+    Luv = 1
+    LCH = 2
+    XYZ = 3
+enum IlluminantType:
+    D65 = 0
+enum ObserverType:
+    TwoDegree = 0
+    TenDegree = 1
+enum ExceptionType:
+    Saturation = 0
+    InvalidAcquisitionSettings = 1
+    Unknown = 2
+enum OpticsConfigSystemTypes:
+    ReflectanceAndTransmittanceAutoBaseline = -2
+    ReflectanceAndTransmittance = -1
+    ReflectanceProbe = 0
+    TransmissionStage = 1
+    MicroscopeObjectiveReflectance = 2
+    MicroscopeObjectiveTransmittance = 3
+    ContactProbeHandHeld = 4
+    ContactProbeHandHeldAutoBaseline = 5
+    ContactStage = 6
+    ContactStageAutoBaseline = 7
+    CTMProbe = 8
+    TransCurved = 9
+enum ConstructorWarning:
+    None = 0
+    StartupRecipeLoadFailure = 1
+    Generic = 2
+enum GraphicalUserInterfaceType:
+    Standard = 0
+    None = 1
+enum GraphicalUserInterfaceStartupState:
+    Shown = 0
+    Hidden = 1
+enum MeasurementTimingModes:
+    Recommended = 0
+    Maximum = 1
+    Manual = 2
+enum SpectrometerTypes:
+    All = 0
+    ShortWavelengthsOnly = 1
+    LongWavelengthsOnly = 2
+    ExtendedWavelengths = 3
+enum SubsystemMeasType:
+    Reflectance = 0
+    Transmittance = 1
+    ReflAtFirstAngle = 2
+enum SpectrometerIndex:
+    ShortWavelength = 0
+    LongWavelength = 1
+enum Filmetrics.LightState:
+    LightOn = 0
+    LightOff = 1
+enum Filmetrics.LEDChannel:
+    UV = 0
+    Violet = 1
+    Green = 2
+    Red = 3
+    NIR1 = 4
+    NIR2 = 5
+    SWIR1 = 6
+    SWIR2 = 7
+    SWIR3 = 8
+enum Filmetrics.LampChannel:
+    HP550 = 0
+    LP700 = 1
+    HP1200 = 2
+enum Filmetrics.FiberMuxChannel:
+    UV = 0
+    Violet = 1
+    Green = 2
+    Red = 3
+    NIR1 = 4
+    NIR2 = 5
+    SWIR1 = 6
+    SWIR2 = 7
+    SWIR3 = 8
+    FilterHP550 = 9
+    FilterLP700 = 10
+    FilterHP1200 = 11
+    Dark = 12
+enum Filmetrics.TmcmControllerEnums.InterlockInput:
+    None = 0
+    ShutdownPin = 1
+    DIN6 = 2
+enum Filmetrics.TmcmControllerEnums.DIN6Version:
+    PostMotionStop = 0
+    ImmediateStop = 1
+enum Filmetrics.FIMatFileDBService.LicenseLevel:
+    Unlicensed = 0
+    ShippingReadOnly = 1
+    ReadOnly = 2
+    ReadWrite = 3
+    ReadWriteAdmin = 4
+    ShippingReadWrite = 5
+enum Filmetrics.FIMatFileDBService.FileType:
+    NK = 0
+    RRR = 1
+    TTT = 2
+enum Filmetrics.FIMatFileDBService.ReleaseLevel:
+    Local = 0
+    Unreleased = 1
+    Customer = 2
+    Released = 3
+    Unknown = 4
+    Shipping = 5
+    Deleted = 6
+enum FIUVSourceLib.FISystemTypesUV:
+    kSysTypeUVSource = 30
+    kSysTypeHnl = 38
+enum FIUVSourceLib.FMUVSourceSubTypes:
+    kFMUVSourceSubtypeDT2 = 1
+    kFMUVSourceSubtypeFirstUndef = 2
+enum FIUsbIntLib.FMF10Subtypes:
+    kFMF10SubtypeAR = 1
+    kFMF10SubtypePA = 2
+    kFMF10SubtypeVC = 3
+    kFMF10SubtypeHC = 4
+    kFMF10SubtypePV = 5
+    kFMF10SubtypeRT = 6
+    kFMF10SubtypeARc = 7
+    kFMF10SubtypeRTA = 8
+    kFMF10SubtypeFirstUndef = 9
+enum FIUsbIntLib.FMF20Subtypes:
+    kFMF20SubtypeHC = 1
+    kFMF20SubtypeE = 2
+    kFMF20SubtypeFirstUndef = 3
+enum FIUsbIntLib.FMF50Subtypes:
+    kFMF50SubtypeF54 = 1
+    kFMF50SubtypeF57 = 2
+    kFMF50SubtypeF50sX = 3
+    kFMF50SubtypeF50XYRT_300 = 4
+    kFMF50SubtypeFirstUndef = 5
+enum FIUsbIntLib.FMF60Subtypes:
+    kFMF60SubtypeF64t = 1
+    kFMF60SubtypeF64c = 2
+    kFMF60SubtypeF60t = 3
+    kFMF60SubtypeF60c = 4
+    kFMF60SubtypeFirstUndef = 5
+enum FIUsbIntLib.FMLegacyAllSystemTypes:
+    kTypeF20 = 1
+    kTypeF30 = 2
+    kTypeF40 = 3
+    kTypeF50_200 = 4
+    kTypeF76 = 5
+    kTypeSpecial = 6
+    kTypeF10 = 7
+    kTypeF70 = 8
+    kTypeF50_300 = 9
+    kTypeF75 = 10
+    kTypeF80 = 11
+    kTypeF50XY_450 = 12
+    kTypeF80OffTool200 = 13
+    kTypeF80OnTool200 = 14
+    kTypeF80OffTool300 = 15
+    kTypeF80OnTool300 = 16
+    kTypeF50XY_200 = 17
+    kTypeF50_200B = 18
+    kTypeF50_300B = 19
+    kTypeF20_F40 = 20
+    kTypeF80SS = 21
+    kTypeF42 = 22
+    kTypeF42Oxford = 23
+    kTypeF37 = 24
+    kTypeF50_450B = 25
+    kTypeF32 = 26
+    kTypeF40NSR = 27
+    kTypePARTS = 28
+    kTypeF50XY_510 = 29
+    kTypeUVSource = 30
+    kTypeF50XY_10 = 31
+    kTypeF2 = 32
+    kTypeF3 = 33
+    kTypeF1 = 34
+    kTypeS3 = 35
+    kTypeOpticalAcc = 36
+    kTypeF60 = 37
+    kTypeHnl = 38
+    kTypeOptProf = 39
+enum FIUsbIntLib.FMOpticConfigEnums:
+    kFMOpticConfigRPStage = 1
+    kFMOpticConfigTransStage = 2
+    kFMOpticConfigCP = 3
+    kFMOpticConfigCPAutoBase = 4
+    kFMOpticConfigCS = 5
+    kFMOpticConfigCSAutoBase = 6
+    kFMOpticConfigMicroscopeR = 7
+    kFMOpticConfigMicroscopeT = 8
+    kFMOpticConfigCTMProbe = 9
+    kFMOpticConfigTransCurved = 10
+enum FIUsbIntLib.FMOpticalAccSubTypes:
+    kFMOpticalAccSubtypeFiberSwitchDual = 1
+    kFMOpticalAccSubtypeOptProf = 2
+    kFMOpticalAccSubtypeXY10 = 3
+    kFMOpticalAccSubtypeFirstUndef = 4
+enum FIUsbIntLib.FMRefMatEnums:
+    kRefMatSi = 1
+    kRefMatBk7 = 2
+    kRefMatFusedSilica2Sided = 3
+    kRefMat1 = 4
+    kRefMatALREF = 5
+enum FIUsbIntLib.FMUSBDeviceType:
+    FMUSBDeviceVisHama = 0
+    FMUSBDeviceIRHama = 1
+    FMUSBDeviceSony = 2
+    FMUSBDevicePhotodiode = 3
+    FMUSBDeviceController = 255
+    FMUSBDeviceF80Base = 257
+    FMUSBDeviceF80Head = 258
+    FIUSB2Device = 512
+    FIUSB2DeviceSpecUvVis = 513
+    FIUSB2DeviceSpecNIR2 = 514
+    FIUSB2DeviceSpecLC = 515
+    FIUSB2DeviceSpecUvVis2 = 516
+    FIUSB2DevicePDLED = 517
+    FIUSB2DeviceSpecTCNIR = 518
+    FIUSB2DeviceOptProf = 519
+    FIUSB2DeviceController = 767
+    FIUSBEmbDevice = 768
+    FIUSBEmbDeviceController = 1023
+enum FIUsbIntLib.FMUSBIntErr:
+    kFMUSBIntErrNoErr = 0
+    kFMUSBIntErrDevNotFound = -100
+    kFMUSBIntErrMemAllocFail = -101
+    kFMUSBIntErrDevListCreateFail = -102
+    kFMUSBIntErrDevListMissing = -103
+    kFMUSBIntErrNoMoreControllersInList = -104
+    kFMUSBIntErrFailedToOpenDevice = -105
+    kFMUSBIntErrFailedI2COperation = -106
+    kFMUSBIntErrControllerFWIncompatible = -107
+    kFMUSBIntErrDevDeviceFWIncompatible = -108
+    kFMUSBIntErrDevSpecificFWIncompatible = -109
+    kFMUSBIntErrObjectNotInstantiated = -110
+    kFMUSBIntErrCreateEventFailure = -111
+    kFMUSBIntErrTimeout = -112
+    kFMUSBIntErrTriedToOpenDeviceAlreadyOpen = -113
+    kFMUSBIntErrDCVoltZeroStuck = -114
+    kFMUSBIntErrDCVoltZeroStuck2 = -115
+    kFMUSBIntErrDCVoltZeroTooLow = -116
+    kFMUSBIntErrStringBufTooSmall = -117
+    kFMUSBIntErrUnrecognizedDevType = -118
+    kFMUSBIntErrInvalidPDIdx = -119
+    kFMUSBIntErrBufferTooSmall = -120
+    kFMUSBIntErrISOPacketSpaceTooSmall = -121
+    kFMUSBIntErrISOPacketDescrSizeDefIncorrect = -122
+    kFMUSBIntErrDeviceConnectNotDone = -123
+    kFMUSBIntErrAnalogChipFailure = -124
+    kFMUSBIntErrFileMutexFailure = -125
+    kFMUSBIntErrLockUnlockSafeArray = -126
+    kFMUSBIntErrIntegrationTimeChanged = -127
+    kFMUSBIntErrOverlappedStateMismatch = -128
+    kFMUSBIntErrWorkerThreadCreatedWhenItShouldHavePreExisted = -129
+    kFMUSBIntErrAttempToOpenLastWhenSymNameIsEmpty = -130
+    kFMUSBIntErrUnrecognizedPDType = -131
+    kFMUSBIntErrRequestedPDChannelNotConnected = -132
+    kFMUSBIntErrAcqAttemptWillCauseFIFOOverrun = -133
+    kFMUSBIntErrAttemptToOverWriteFW = -134
+    kFMUSBIntErrSignalTooSmall = -135
+    kFMUSBIntErrCannotOpenCalibSourceFile = -136
+    kFMUSBIntErrControllerFWOutOfDate = -137
+    kFMUSBIntErrControllerFWOutOfDateFWFlushSupported = -138
+    kFMUSBIntErrCannotOpenCalibLogFile = -139
+    kFMUSBIntErrControllerBareFWOutOfDateFWFlushSupported = -140
+    kFMUSBIntErrDateConversionFailure = -141
+    kFMUSBIntErrRtcMemBlockReadFail = -142
+    kFMUSBIntErrGettingGainProgress = -143
+    kFMUSBIntErrMissingLSOnTimer = -144
+    kFMUSBIntErrMissingSecondaryLSOnTimer = -145
+    kFMUSBIntErrCommandNotSupportedByHW = -146
+    kFMUSBIntErrCommandNotAllowed = -147
+enum FIUsbIntLib.SpectromTempSensorLoc:
+    kFMTSLocDetectorExternal = -1
+    kFMTSLocSpectrometer = 0
+    kFMTSLocDetectorInternal = 2
+enum Microsoft.Office.Core.MsoTriState:
+    msoTrue = -1
+    msoFalse = 0
+    msoCTrue = 1
+    msoTriStateToggle = -3
+    msoTriStateMixed = -2
+enum Microsoft.Office.Interop.Excel.XlBorderWeight:
+    xlHairline = 1
+    xlMedium = -4138
+    xlThick = 4
+    xlThin = 2
+enum Microsoft.Office.Interop.Excel.XlColorIndex:
+    xlColorIndexAutomatic = -4105
+    xlColorIndexNone = -4142
+enum Microsoft.Office.Interop.Excel.XlFileFormat:
+    xlAddIn = 18
+    xlCSV = 6
+    xlCSVMac = 22
+    xlCSVMSDOS = 24
+    xlCSVWindows = 23
+    xlDBF2 = 7
+    xlDBF3 = 8
+    xlDBF4 = 11
+    xlDIF = 9
+    xlExcel2 = 16
+    xlExcel2FarEast = 27
+    xlExcel3 = 29
+    xlExcel4 = 33
+    xlExcel5 = 39
+    xlExcel7 = 39
+    xlExcel9795 = 43
+    xlExcel4Workbook = 35
+    xlIntlAddIn = 26
+    xlIntlMacro = 25
+    xlWorkbookNormal = -4143
+    xlSYLK = 2
+    xlTemplate = 17
+    xlCurrentPlatformText = -4158
+    xlTextMac = 19
+    xlTextMSDOS = 21
+    xlTextPrinter = 36
+    xlTextWindows = 20
+    xlWJ2WD1 = 14
+    xlWK1 = 5
+    xlWK1ALL = 31
+    xlWK1FMT = 30
+    xlWK3 = 15
+    xlWK4 = 38
+    xlWK3FM3 = 32
+    xlWKS = 4
+    xlWorks2FarEast = 28
+    xlWQ1 = 34
+    xlWJ3 = 40
+    xlWJ3FJ3 = 41
+    xlUnicodeText = 42
+    xlHtml = 44
+    xlWebArchive = 45
+    xlXMLSpreadsheet = 46
+    xlExcel12 = 50
+    xlOpenXMLWorkbook = 51
+    xlOpenXMLWorkbookMacroEnabled = 52
+    xlOpenXMLTemplateMacroEnabled = 53
+    xlTemplate8 = 17
+    xlOpenXMLTemplate = 54
+    xlAddIn8 = 18
+    xlOpenXMLAddIn = 55
+    xlExcel8 = 56
+    xlOpenDocumentSpreadsheet = 60
+    xlWorkbookDefault = 51
+enum Microsoft.Office.Interop.Excel.XlPlatform:
+    xlMacintosh = 1
+    xlMSDOS = 3
+    xlWindows = 2
+enum Microsoft.Office.Interop.Excel.XlSaveAsAccessMode:
+    xlExclusive = 3
+    xlNoChange = 1
+    xlShared = 2

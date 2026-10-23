@@ -1,0 +1,10 @@
+# Windows 7 / Python 3.8 compatible dependency pins for pyfilmetrics (Tkinter GUI).
+# Install with:  python -m pip install -r requirements-win7.txt
+# (Do NOT install PySide6 on Win7 — Qt6 needs Windows 10+. Use the Tkinter GUI: filmeas.app.gui_tk)
+
+numpy==1.24.4
+scipy==1.10.1
+matplotlib==3.7.5
+
+# Only needed to talk to the real instrument (use 32-bit Python for this — FIUsbInt.dll is x86):
+comtypes>=1.2.0

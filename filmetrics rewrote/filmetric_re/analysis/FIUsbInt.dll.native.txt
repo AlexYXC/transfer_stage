@@ -1,0 +1,30 @@
+# FIUsbInt.dll  (730600 bytes)
+arch=x86
+
+## IMPORTS
+[SETUPAPI.dll] (4)
+  SetupDiEnumDeviceInterfaces, SetupDiDestroyDeviceInfoList, SetupDiGetDeviceInterfaceDetailA, SetupDiGetClassDevsA
+[VERSION.dll] (3)
+  GetFileVersionInfoSizeA, VerQueryValueA, GetFileVersionInfoA
+[WINMM.dll] (1)
+  timeGetTime
+[WINUSB.DLL] (6)
+  WinUsb_WritePipe, WinUsb_QueryInterfaceSettings, WinUsb_Initialize, WinUsb_GetAssociatedInterface, WinUsb_Free, WinUsb_QueryPipe
+[KERNEL32.dll] (130)
+  WriteFile, FlushFileBuffers, FreeEnvironmentStringsW, GetEnvironmentStringsW, GetCommandLineW, Sleep, DecodePointer, RaiseException, GetLastError, InitializeCriticalSectionEx, DeleteCriticalSection, GetSystemTime, GetTickCount, FileTimeToSystemTime, SystemTimeToFileTime, GetModuleFileNameA, GetModuleHandleA, CreateFileA, CloseHandle, DeviceIoControl, CancelIo, SetEvent, GetConsoleCP, CreateEventA, ResetEvent, ReleaseMutex, CreateMutexA, EnterCriticalSection, LeaveCriticalSection, FreeLibrary, GetProcAddress, LoadLibraryExA, LoadResource, SizeofResource, lstrcmpiA, FindResourceA, MultiByteToWideChar, WideCharToMultiByte, IsDBCSLeadByte, EncodePointer, GetModuleHandleW, GetThreadLocale, SetThreadLocale, GetCommandLineA, GetCPInfo, GetOEMCP, IsValidCodePage, GetConsoleMode, CreateFileW, SetStdHandle, WriteConsoleW, SetEndOfFile, ReadFile, ReadConsoleW, WaitForSingleObject, CreateEventW, FindNextFileA, FindFirstFileExA, FindClose, GetProcessHeap, HeapReAlloc, HeapSize, LCMapStringW, SetFilePointerEx, GetStringTypeW, GetFileType, GetStdHandle, GetACP, ExitProcess, HeapFree, IsDebuggerPresent, OutputDebugStringW, TryEnterCriticalSection, GetCurrentThreadId, QueryPerformanceCounter, SetLastError, InitializeCriticalSectionAndSpinCount, TlsAlloc, TlsGetValue, TlsSetValue, TlsFree, GetSystemTimeAsFileTime, UnhandledExceptionFilter, SetUnhandledExceptionFilter, GetCurrentProcess, TerminateProcess, IsProcessorFeaturePresent, WaitForSingleObjectEx, GetStartupInfoW, GetCurrentProcessId, InitializeSListHead, SignalObjectAndWait, SwitchToThread, CreateThread, SetThreadPriority, GetThreadPriority, GetLogicalProcessorInformation, CreateTimerQueueTimer, ChangeTimerQueueTimer, DeleteTimerQueueTimer, GetNumaHighestNodeNumber, GetProcessAffinityMask, SetThreadAffinityMask, RegisterWaitForSingleObject, UnregisterWait, GetCurrentThread, GetThreadTimes, FreeLibraryAndExitThread, GetModuleFileNameW, LoadLibraryExW, GetVersionExW, VirtualAlloc, VirtualFree, VirtualProtect, DuplicateHandle, ReleaseSemaphore, InterlockedPopEntrySList, InterlockedPushEntrySList, InterlockedFlushSList, QueryDepthSList, UnregisterWaitEx, CreateTimerQueue, LoadLibraryW, RtlUnwind, ExitThread, ResumeThread, GetModuleHandleExW, GetSystemInfo, VirtualQuery, HeapAlloc
+[USER32.dll] (2)
+  CharNextW, CharNextA
+[ADVAPI32.dll] (9)
+  RegSetValueExA, RegQueryInfoKeyW, RegOpenKeyExA, RegEnumKeyExA, RegDeleteValueA, RegDeleteKeyA, RegCreateKeyExA, RegCloseKey, RegQueryInfoKeyA
+[SHELL32.dll] (1)
+  SHGetFolderPathA
+[ole32.dll] (5)
+  CoTaskMemFree, StringFromGUID2, CoTaskMemAlloc, CoCreateInstance, CoTaskMemRealloc
+[OLEAUT32.dll] (12)
+  VarUI4FromStr, SysAllocString, SafeArrayGetLBound, SafeArrayGetUBound, UnRegisterTypeLib, RegisterTypeLib, LoadRegTypeLib, LoadTypeLib, SysStringLen, SafeArrayUnaccessData, SafeArrayAccessData, SysFreeString
+[SHLWAPI.dll] (1)
+  StrToIntA
+
+## EXPORTS
+(5 exports)
+  DllCanUnloadNow, DllGetClassObject, DllInstall, DllRegisterServer, DllUnregisterServer

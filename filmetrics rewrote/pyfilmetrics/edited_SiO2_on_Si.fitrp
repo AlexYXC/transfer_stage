@@ -1,0 +1,254 @@
+***Machine Readable Structure Export Version (Copy all lines), 12
+Name, "SiO2 on Si"
+GUID, 75ac132f-6c45-4b2f-9ffd-524bb61e83e0
+UserID, ""
+Mod. Date(03/27/2017 17:21:31), 42821.7232848958
+Num Location,  1
+UnitsMode(A),1
+CustomUnitName, Custom
+CustomUnitNameAbbr, Cstm
+CustomUnitNanometersPerCustomUnit, 1
+
+===== Measure Site  1 =====
+Measure Site Location XY (mm),-1,-1
+Enable Robust Thickness, 0
+Enable FFT Thickness Only,  0
+Valid measurement requires GOF, 0
+Solve for GOF, 0
+[Correlative Coefficients]
+Coefficients A, 1
+Coefficients B, 0
+Correlative min. thickness(A), 0
+Correlative max. thickness(A), 1000000000
+Correlative Active,FALSE
+
+[Layers]
+Number of Layers,  1
+Layer ID      "Material"   "Thick.(A)""Rough.(A)"  d    n    k    r  
+  Medium  ,      "Air"      ,    0     ,    0     ,     ,     ,     ,     
+ Layer  1 ,      "SiO2"     ,   12000  ,    0     ,  X  ,     ,     ,     
+Substrate ,      "Si"       ,    0     ,    0     ,     ,     ,     ,     
+
+[Constraints]
+Layer ID          Thick(%)     N         K     
+    "Medium"     ,    0     ,    .5    ,    0     
+    "Layer  1"   ,    100   ,    10    ,    10    
+   "Substrate"   ,    0     ,    10    ,    10    
+Account for nonplanarity,FALSE
+Account for nonuniformity,FALSE
+Lock identical layers,FALSE
+
+[Options]
+Reflectance Option?,TRUE
+Transmittance Option?,FALSE
+Simultaneous Reflectance & Transmittance Option?,FALSE
+Angle, 0
+TE Polarization?,TRUE
+Transmittance File Name,""
+Use Grid Search for Initial Thickness,TRUE
+Use Fourier Search for Initial Thickness,FALSE
+Account for Back Reflectance,FALSE
+SolverGOFTarget setting, .999
+Max Iterations, 400
+Medium n model,"Cauchy"
+Layer 1 n & k model,"Cauchy"
+Substrate n & k model,"Bridge Lorentzian-3Term"
+Wavelength for n and k display, 632.8
+Displayed Data?,FALSE
+Fixed Range?,TRUE
+Range From, 200
+To, 2000
+[SiteMapParams]
+CoordSystem Is Wafer,TRUE
+DIF Site ID, 0
+Coordinate System,"Custom"
+Number of Points or Pat name,""
+Edge Exclusion, 0
+[Additional Options]
+Number Of Potential Spectra For Analysis,2
+R1 Option?,FALSE
+T1 Option?,FALSE
+Simultaneous1 Option?,FALSE
+
+[Alarms]
+Activate Alarms,FALSE
+Layer ID         Nom. Thick    Min       Max   
+    "Medium"     ,    0     ,    0     ,    0     
+    "Layer  1"   ,   9000   ,    0     ,  16000   
+   "Substrate"   ,    0     ,    0     ,    0     
+Spot Size (microns), 0
+Use Accurate NA Correction, FALSE
+
+[Regional Spectral Analysis]
+Spectrum Analysis Active,False
+Control Spectrum FullPath,
+Number of Average Reflectance Regions,0
+Region           Start WavelengthEnd WavelengthMin ReflectanceMax Reflectance  Active  
+Number of Extrema Regions,0
+Region           Start WavelengthEnd WavelengthMin ReflectanceMax ReflectanceExtrema TypeHC Correction  Active  
+Use Global Corr, FALSE
+
+[SUV Weighting]
+SUVA Active,FALSE
+SUVB Active,FALSE
+SUVAB Active,FALSE
+LuminousReflectance, FALSE
+YID1925, FALSE
+
+[Region Spectral Analysis - Addon]
+Average value
+Region             Trans   
+Extrema
+Region             Trans   
+
+[FFT Window]
+Vary FFT Window Position?,FALSE
+Vary FFT Window Size?,FALSE
+FFT Window Min Size,2000
+FFT Window Size,2000
+[Layer Parameters V2]
+N grading fraction in layer #0, 0
+Solve for Grading in layer #0, FALSE
+Nonuniformity fraction in layer #0, 0
+Solve for Nonuniformity in layer #0, FALSE
+N grading fraction in layer #1, 0
+Solve for Grading in layer #1, FALSE
+Nonuniformity fraction in layer #1, 0
+Solve for Nonuniformity in layer #1, FALSE
+N grading fraction in layer #2, 0
+Solve for Grading in layer #2, FALSE
+Nonuniformity fraction in layer #2, 0
+Solve for Nonuniformity in layer #2, FALSE
+Use Robust Thickness Only if not FFT, FALSE
+[Site Average Reflectance]
+Average Reflectance,FALSE
+Starting WaveLength, 0
+Ending WaveLength, 0
+Reference WaveLength, 0
+MaxSolverRestarts, -1
+[Color Alarm]
+Color Alarm Active, False
+Color Alarm Coordinate System,  3
+Color Coordinate 1 Min, -100
+Color Coordinate 1 Max,  100
+Color Coordinate 2 Min, -100
+Color Coordinate 2 Max,  100
+Color Coordinate 3 Min, -100
+Color Coordinate 3 Max,  100
+[Spectrum Analysis Min/Max Hard Limits]
+
+[Site Z-Stage]
+Max Wafer Thickness, 1
+Max Wafer Height Variation, .5
+Force Set Z Enabled, TRUE
+Set Z At Fixed Wavelength Enabled, TRUE
+Set Z Target Wavelength,  1200
+Set Z Peaks Required,  1
+Report CTM Lens Position, False
+
+[LayerReps]
+Layer ID            Reps   
+    "Medium"     ,    1     
+    "Layer  1"   ,    1     
+   "Substrate"   ,    1     
+FFTScalingFactor, 1
+======End of measure site  1 ======
+[CUSTOM EXPORT]
+Auto Export Wafer Map,FALSE
+
+[Acqusition Settings]
+Number of Smoothing Points, 1
+Measurement Timing,0
+Spectrometer Type, 0
+Maximum Integration Time,40
+Fixed Integration Time (short wavelengths), 40
+Fixed Integration Cycles (short wavelengths), 1
+Fixed Integration Time (long wavelengths), 40
+Fixed Integration Cycles (long wavelengths), 1
+Peak Value (short wavelengths), 0
+Peak Value (long wavelengths), 0
+<Reference Material1>, "Si"
+<ReferenceMaterialKnown1>, True
+Smoothing Thickness um,  60
+Graph limits start wavelength,  200
+Graph limits end wavelength,  1100
+Measure delay, 0
+Stored baseline name, 
+
+[Acquisition2 Settings]
+Spectrometer Type, 0
+Fixed Integration Time (short wavelengths), 2
+Fixed Integration Cycles (short wavelengths), 1
+Fixed Integration Time (long wavelengths), 40
+Fixed Integration Cycles (long wavelengths), 1
+Peak Value (short wavelengths), 0
+Peak Value (long wavelengths), 0
+
+
+[Acquisition3 Settings]
+Spectrometer Type, 0
+Fixed Integration Time (short wavelengths), 40
+Fixed Integration Cycles (short wavelengths), 1
+Fixed Integration Time (long wavelengths), 40
+Fixed Integration Cycles (long wavelengths), 1
+Peak Value (short wavelengths), 0
+Peak Value (long wavelengths), 0
+
+Dual Meas Selected Type, 0
+Dual Meas Trans Spec Same As R, TRUE
+<Reference Material2>, "Si"
+<ReferenceMaterialKnown2>, False
+
+[Optics Configuration]
+Microscope Name, "Microscope"
+System GUID, 275a3ee12d3b4626b2130dcdc1eff4db
+Use With Any System, FALSE
+Optics Configuration, 0
+MeasStage LastMeasTypeWasRefl, TRUE
+ContactProbe LastAutoBaselineSelectionWasTrue, TRUE
+ContactStage LastAutoBaselineSelectionWasTrue, TRUE
+Microscope LastMeasTypeWasRefl, TRUE
+Objective Exists, FALSE
+
+[CTM Optics Configuration]
+CTM Probe Exists, FALSE
+Show Thickness range in Thickness units, FALSE
+Show nonuniformity in percent, FALSE
+
+[Backside Subtraction]
+Backside R Subtraction Enabled, FALSE
+Substrate Material, "Si"
+Ignore Baseline Info in Recipe, FALSE
+
+[AutoFocus Settings]
+AutoFocus On, FALSE
+AutoFocus type, 0
+Z offset for max signal, 0
+Z offset for image focus, 0
+Auto Focus Max Signal Sample Thickness, 0
+
+[AutoFocus2 Settings]
+Map Autofocus Center Only, 0
+Auto Edge Find, 0
+Align with Origin Only, 0
+Map Origin Type, 0
+
+[SpectrometervsTime Acq. Settings]
+VsTimeInputModeIsSpectrometer, TRUE
+NumWavelengths, 3
+Wavelength ID Wavelength   Active   
+      1      ,    400   ,   True   
+      2      ,    600   ,   True   
+      3      ,    800   ,   True   
+
+[Z Optics]
+ZOpticsType, 1
+GuidForZOptics, 00000000-0000-0000-0000-000000000000
+
+Reflective Objective Focus Range Percent, 100
+Reflective Objective Focus Step Size Percent, 100
+Map Origin Offset Type,0
+Map Origin Offset Absolute X,0
+Map Origin Offset Absolute Y,0
+***End Machine Readable Structure***
+CHECKSUM= 542740

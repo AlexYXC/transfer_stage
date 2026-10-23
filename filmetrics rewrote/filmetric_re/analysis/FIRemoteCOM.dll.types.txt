@@ -1,0 +1,13 @@
+<Module>
+FIRemoteCOM.My.MyApplication
+FIRemoteCOM.My.MyComputer
+FIRemoteCOM.My.MyProject
+MyWebServices
+ThreadSafeObjectProvider`1
+FIRemoteCOM.My.Resources.Resources
+FIRemoteCOM.My.MySettings
+FIRemoteCOM.My.MySettingsProperty
+FIRemoteCOM._FIRemoteCOM
+FIRemoteCOM.FIRemoteCOM
+FIRemoteCOM.DllRegisterFunctions
+FIRemoteCOM.DllExport.DllExportAttribute

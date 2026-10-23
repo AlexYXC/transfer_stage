@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+<resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>1.3</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><data name="ComboBoxAccessType.ToolTip" xml:space="preserve"><value>Unreleased - Data which is not fully trusted or should not be shown for various reasons.
+Unencrypted All - Data which is readily available. Can be downloaded from filmetrics.com without permission.
+     Supplied data file will not be encrypted.
+Unencrypted All With Permission - Data not readily available elsewhere and thus more valuable. Available to anyone, 
+     but we must issue permission. Supplied data file will not be encrypted.
+Encrypted Customer With Permission - Data which is even more valuable and is therefore only available to existing
+     Filmetrics Customers. We must issue permission for them to be given the data. Supplied data file will be encrypted
+     and will only be readable by Filmetrics software.
+Customer Specific - Data which is proprietary to a particular customer. This data will not be shown on filmetrics.com.
+Automatic mapping (if no access type attribute is specified) OMDB type -&gt;filmetrics.com type:
+Local, Unreleased, Unknown, Deleted -&gt; Unreleased
+Customer -&gt; Customer Specific
+Released, Shipping -&gt; Encrypted Customer With Permission</value></data>
+  <data name="ButtonUpdateFiles.ToolTip" xml:space="preserve"><value>Read summary file and update material data files with any changes.
+This function allows a user to edit the data in a .txt file and then
+import any changes into the material files rather than having to edit
+the material files individually.</value></data>
+  </root>

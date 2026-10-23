@@ -1,0 +1,20 @@
+# strings of interest: FIImage.dll
+
+## usb/driver (1)
+  CreateFileW
+
+## i2c/proto/cmd (12)
+  0 0$0(04080<0@0D0H0L0P0T0X0\0`0d0h0l0p0t0x0|0
+  0 0(00080@0H0P0X0`0h0p0x0
+  0v0~0x1
+  FLT_STACK_CHECK
+  GetCommandLineA
+  GetCommandLineW
+  GetCurrentPackageId
+  GetProcAddress
+  STACK_OVERFLOW
+  Wj0XPV
+  j0Xf;
+  location: %f, the exception is 0x%08X: %s 
+
+## com/reg (0)

@@ -1,0 +1,146 @@
+***Machine Readable Structure Export Version (Copy all lines), 10
+Name, "AR Standard"
+GUID, 785f2a19-01fe-451f-9b52-257dff999c66
+UserID, "Filmetrics, Inc."
+Mod. Date(10/19/2010 11:52:06), 40470.4945176042
+Num Location,  1
+UnitsMode(nm), 2
+
+===== Measure Site  1 =====
+Measure Site Location XY (mm), 0, 0
+Enable Robust Thickness, 1
+Enable FFT Thickness Only,  1
+Valid measurement requires GOF, 0
+Solve for GOF, 0
+[Correlative Coefficients]
+Coefficients A, 1
+Coefficients B, 0
+Correlative min. thickness(nm), 0
+Correlative max. thickness(nm), 100000000
+Correlative Active,FALSE
+
+[Layers]
+Number of Layers,  1
+Layer ID      "Material"   "Thick.(nm)""Rough.(nm)"  d    n    k    r  
+  Medium  ,      "Air"      ,    1     ,    0     ,     ,     ,     ,     
+ Layer  1 ,      "Air"      ,   6000   ,    0     ,  X  ,     ,     ,     
+Substrate ,      "Air"      ,    1     ,    0     ,     ,     ,     ,     
+
+[Constraints]
+Layer ID          Thick(%)     N         K     
+    "Medium"     ,    95    ,    .5    ,    .1    
+    "Layer  1"   ,    67    ,    .5    ,    .1    
+   "Substrate"   ,    95    ,    .5    ,    .1    
+Account for nonplanarity,FALSE
+Account for nonuniformity,FALSE
+Lock identical layers,FALSE
+
+[Options]
+Reflectance Option?,TRUE
+Transmittance Option?,FALSE
+Simultaneous Reflectance & Transmittance Option?,FALSE
+Angle, 0
+TE Polarization?,TRUE
+Transmittance File Name,""
+Use Grid Search for Initial Thickness,TRUE
+Use Fourier Search for Initial Thickness,FALSE
+Account for Back Reflectance,FALSE
+SolverGOFTarget setting, .001
+Max Iterations, 400
+Medium n model,"Cauchy"
+Layer 1 n & k model,"Cauchy"
+Substrate n & k model,"Bridge Lorentzian-3Term"
+Wavelength for n and k display, 632.8
+Displayed Data?,FALSE
+Fixed Range?,TRUE
+Range From, 200
+To, 2000
+[SiteMapParams]
+Blanket Wafer Site?,TRUE
+DIF Site ID, 0
+Coordinate System,"Custom"
+Number of Points or Pat name,"Custom1"
+Edge Exclusion, 0
+
+[Alarms]
+Activate Alarms,FALSE
+Layer ID         Nom. Thick    Min       Max   
+    "Medium"     ,    1     ,    0     ,    1     
+    "Layer  1"   ,   6000   ,    0     ,    1     
+   "Substrate"   ,    1     ,    0     ,    1     
+Spot Size (microns), 0
+Use Accurate NA Correction, FALSE
+
+[Regional Spectral Analysis]
+Spectrum Analysis Active,True
+Control Spectrum FullPath,
+Number of Average Reflectance Regions,1
+Region           Start WavelengthEnd WavelengthMin ReflectanceMax Reflectance  Active  
+       "0"       ,    410   ,    460   ,   0.01   ,   0.03   ,  False   
+Number of Extrema Regions,1
+Region           Start WavelengthEnd WavelengthMin ReflectanceMax ReflectanceExtrema TypeHC Correction  Active  
+       "0"       ,    530   ,    610   ,  0.002   ,  0.012   ,    1     ,  False   ,  False   
+Use Global Corr, FALSE
+
+[Region Spectral Analysis - Addon]
+Average value
+Region             Trans   
+       "0"       ,  False   
+Extrema
+Region             Trans   
+       "0"       ,  False   
+
+[FFT Window]
+Vary FFT Window Position?,FALSE
+Vary FFT Window Size?,FALSE
+FFT Window Min Size,2000
+FFT Window Size,2000
+======End of measure site  1 ======
+[CUSTOM EXPORT]
+Auto Export Wafer Map,FALSE
+
+[Acqusition Settings]
+Number of Smoothing Points (Obsoleted on 8/15/07), 1
+Measurement Timing,0
+Spectrometer Type, 0
+Maximum Integration Time,3
+Fixed Integration Time (short wavelengths), 50
+Fixed Integration Cycles (short wavelengths), 10
+Fixed Integration Time (long wavelengths), 40
+Fixed Integration Cycles (long wavelengths), 1
+Peak Value (short wavelengths), 0
+Peak Value (long wavelengths), 0
+<Reference Material1>, Si
+<ReferenceMaterialKnown1>, False
+Smoothing Thickness um,  60
+Graph limits start wavelength,  380
+Graph limits end wavelength,  1000
+Measure delay, 0
+Stored baseline name, 
+
+[Acquisition2 Settings]
+Spectrometer Type, 0
+Fixed Integration Time (short wavelengths), 40
+Fixed Integration Cycles (short wavelengths), 1
+Fixed Integration Time (long wavelengths), 40
+Fixed Integration Cycles (long wavelengths), 1
+Peak Value (short wavelengths), 0
+Peak Value (long wavelengths), 0
+
+Dual Meas Selected Type, 0
+Dual Meas Trans Spec Same As R, TRUE
+<Reference Material2>, Si
+<ReferenceMaterialKnown2>, False
+
+[Optics Configuration]
+Microscope Name, "Nothing"
+System GUID, 
+Use With Any System, FALSE
+Optics Configuration, 5
+MeasStage LastMeasTypeWasRefl, TRUE
+ContactProbe LastAutoBaselineSelectionWasTrue, FALSE
+ContactStage LastAutoBaselineSelectionWasTrue, FALSE
+Microscope LastMeasTypeWasRefl, TRUE
+Objective Exists, FALSE
+***End Machine Readable Structure***
+CHECKSUM= 316976
